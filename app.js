@@ -1,12 +1,48 @@
-const state = {
+const STORAGE_KEY = 'ttc-command-centre-demo-v1';
+
+const initialState = {
   currentPage: 'today',
+  tasks: window.dashboardData.tasks,
+  contentPackages: window.dashboardData.contentPackages,
+  audits: window.dashboardData.audits,
+  links: window.dashboardData.links,
+  appointments: window.dashboardData.appointments,
+  metrics: window.dashboardData.metrics
 };
 
-const nav = window.dashboardData.nav;
-const tasks = window.dashboardData.tasks;
-const packages = window.dashboardData.contentPackages;
-const audits = window.dashboardData.audits;
-const links = window.dashboardData.links;
+const state = loadState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return { ...initialState };
+    const parsed = JSON.parse(saved);
+    return {
+      ...initialState,
+      ...parsed,
+      tasks: parsed.tasks || initialState.tasks,
+      contentPackages: parsed.contentPackages || initialState.contentPackages,
+      audits: parsed.audits || initialState.audits,
+      links: parsed.links || initialState.links,
+      appointments: parsed.appointments || initialState.appointments,
+      metrics: parsed.metrics || initialState.metrics
+    };
+  } catch (error) {
+    return { ...initialState };
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    currentPage: state.currentPage,
+    tasks: state.tasks,
+    contentPackages: state.contentPackages,
+    audits: state.audits,
+    links: state.links,
+    appointments: state.appointments,
+    metrics: state.metrics
+  }));
+}
 
 const navEl = document.getElementById('nav');
 const pageContentEl = document.getElementById('page-content');
@@ -24,7 +60,7 @@ function getDayLabel() {
 }
 
 function renderNav() {
-  navEl.innerHTML = nav
+  navEl.innerHTML = window.dashboardData.nav
     .map((item) => {
       const active = item.id === state.currentPage ? 'active' : '';
       return `
@@ -39,6 +75,7 @@ function renderNav() {
   navEl.querySelectorAll('.nav-item').forEach((button) => {
     button.addEventListener('click', () => {
       state.currentPage = button.dataset.page;
+      saveState();
       render();
     });
   });
@@ -47,7 +84,7 @@ function renderNav() {
 function renderQuickLinks() {
   quickLinksEl.innerHTML = `
     <div class="quick-link-list">
-      ${links
+      ${state.links
         .map(
           (link) => `
             <a class="quick-link" href="${link.url}" target="_blank" rel="noreferrer">
@@ -63,15 +100,13 @@ function renderQuickLinks() {
 function renderMetrics() {
   return `
     <div class="metric-grid">
-      ${window.dashboardData.metrics.today
-        .map(
-          (metric) => `
-            <div class="metric-card">
-              <div class="metric-label">${metric.label}</div>
-              <div class="metric-value">${metric.value}</div>
-            </div>
-          `
-        )
+      ${state.metrics.today
+        .map((metric) => `
+          <div class="metric-card">
+            <div class="metric-label">${metric.label}</div>
+            <div class="metric-value">${metric.value}</div>
+          </div>
+        `)
         .join('')}
     </div>
   `;
@@ -138,10 +173,108 @@ function renderAuditCard(audit) {
   `;
 }
 
+function renderAppointmentCard(appointment) {
+  return `
+    <div class="schedule-item">
+      <time>${appointment.time}</time>
+      <div class="task-title">${appointment.title}</div>
+      <span class="chip">Fixed</span>
+    </div>
+  `;
+}
+
+function renderPlannerOutput() {
+  const planner = getPlannerOutput();
+
+  return `
+    <section class="page-section">
+      <div class="planner-output">
+        <h3>Suggested day plan</h3>
+        <div class="schedule-list">
+          ${planner.map((item) => `
+            <div class="schedule-item">
+              <time>${item.time}</time>
+              <div class="task-title">${item.title}</div>
+              <span class="chip">${item.type}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function getPlannerOutput() {
+  const plannedTasks = [...state.tasks]
+    .sort((a, b) => {
+      const order = { high: 0, medium: 1, low: 2 };
+      return order[a.priority] - order[b.priority];
+    })
+    .slice(0, 4)
+    .map((task, index) => ({
+      time: ['09:00', '10:30', '13:00', '15:00'][index],
+      title: task.title,
+      type: task.area
+    }));
+
+  return [
+    ...plannedTasks,
+    { time: '16:00', title: 'Review and set tomorrow', type: 'Admin' }
+  ];
+}
+
+function renderTaskForm() {
+  return `
+    <section class="page-section">
+      <div class="task-form">
+        <div class="section-header">
+          <h2>Add a task</h2>
+        </div>
+        <form id="new-task-form">
+          <div class="form-grid">
+            <div class="field">
+              <label for="task-title">Title</label>
+              <input id="task-title" name="title" type="text" placeholder="Example: Publish YouTube short" required />
+            </div>
+            <div class="field">
+              <label for="task-area">Area</label>
+              <select id="task-area" name="area">
+                <option>Content production</option>
+                <option>Design</option>
+                <option>Website & SEO</option>
+                <option>Publishing</option>
+                <option>Revenue / leads</option>
+                <option>Operations</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority" name="priority">
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="task-due">Due</label>
+              <input id="task-due" name="due" type="text" placeholder="Today / Tomorrow / Friday" value="Today" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="task-notes">Notes</label>
+            <textarea id="task-notes" name="notes" placeholder="What needs to happen and why?"></textarea>
+          </div>
+          <button class="primary-button" type="submit">Add task</button>
+        </form>
+      </div>
+    </section>
+  `;
+}
+
 function renderTodayPage() {
-  const activeTasks = tasks.filter((task) => task.status !== 'blocked');
-  const needsOphelia = tasks.filter((task) => task.requiresOphelia && !task.blocked);
-  const blockedTasks = tasks.filter((task) => task.blocked);
+  const activeTasks = state.tasks.filter((task) => task.status !== 'blocked');
+  const needsOphelia = state.tasks.filter((task) => task.requiresOphelia && !task.blocked);
+  const blockedTasks = state.tasks.filter((task) => task.blocked);
 
   return `
     <section class="page-section">
@@ -184,7 +317,7 @@ function renderTodayPage() {
         <h2>Content packages</h2>
       </div>
       <div class="card-grid">
-        ${packages.map(renderPackageCard).join('')}
+        ${state.contentPackages.map(renderPackageCard).join('')}
       </div>
     </section>
 
@@ -193,7 +326,7 @@ function renderTodayPage() {
         <h2>Website & SEO</h2>
       </div>
       <div class="card-grid">
-        ${audits.map(renderAuditCard).join('')}
+        ${state.audits.map(renderAuditCard).join('')}
       </div>
     </section>
 
@@ -207,6 +340,8 @@ function renderTodayPage() {
         </div>
       </div>
     </section>
+
+    ${renderTaskForm()}
   `;
 }
 
@@ -217,7 +352,7 @@ function renderContentPage() {
         <h2>Content packages</h2>
       </div>
       <div class="card-grid">
-        ${packages.map(renderPackageCard).join('')}
+        ${state.contentPackages.map(renderPackageCard).join('')}
       </div>
     </section>
   `;
@@ -232,11 +367,31 @@ function renderTasksPage() {
       <div class="card-grid">
         <div class="panel-card" style="grid-column: 1 / -1;">
           <div class="list">
-            ${tasks.map(renderTaskCard).join('')}
+            ${state.tasks.map(renderTaskCard).join('')}
           </div>
         </div>
       </div>
     </section>
+    ${renderTaskForm()}
+  `;
+}
+
+function renderPlannerPage() {
+  return `
+    <section class="page-section">
+      <div class="planner-output">
+        <h3>Daily planner</h3>
+        <div class="scheduler">
+          <div class="task-meta">
+            <span class="tag">Fixed appointments</span>
+          </div>
+          <div class="schedule-list">
+            ${state.appointments.map(renderAppointmentCard).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+    ${renderPlannerOutput()}
   `;
 }
 
@@ -247,7 +402,7 @@ function renderSeoPage() {
         <h2>Website, SEO & AI-searchability</h2>
       </div>
       <div class="card-grid">
-        ${audits.map(renderAuditCard).join('')}
+        ${state.audits.map(renderAuditCard).join('')}
       </div>
     </section>
   `;
@@ -277,7 +432,7 @@ function renderRevenuePage() {
       <div class="card-grid">
         <div class="panel-card">
           <div class="list">
-            ${tasks
+            ${state.tasks
               .filter((task) => task.area === 'Revenue / leads' || task.area === 'Operations')
               .map(renderTaskCard)
               .join('')}
@@ -296,10 +451,7 @@ function renderNeedsOpheliaPage() {
       </div>
       <div class="panel-card">
         <div class="list">
-          ${tasks
-            .filter((task) => task.requiresOphelia)
-            .map(renderTaskCard)
-            .join('')}
+          ${state.tasks.filter((task) => task.requiresOphelia).map(renderTaskCard).join('')}
         </div>
       </div>
     </section>
@@ -314,54 +466,7 @@ function renderWaitingPage() {
       </div>
       <div class="panel-card">
         <div class="list">
-          ${tasks
-            .filter((task) => task.blocked || task.status === 'waiting')
-            .map(renderTaskCard)
-            .join('')}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function getPlannerOutput() {
-  const plannedTasks = [...tasks]
-    .sort((a, b) => {
-      const order = { high: 0, medium: 1, low: 2 };
-      return order[a.priority] - order[b.priority];
-    })
-    .slice(0, 4)
-    .map((task, index) => ({
-      time: ['09:00', '10:30', '13:00', '15:00'][index],
-      title: task.title,
-      type: task.area
-    }));
-
-  return [
-    ...plannedTasks,
-    { time: '16:00', title: 'Review and set tomorrow', type: 'Admin' }
-  ];
-}
-
-function renderPlannerOutput() {
-  const planner = getPlannerOutput();
-
-  return `
-    <section class="page-section">
-      <div class="planner-output">
-        <h3>Suggested day plan</h3>
-        <div class="schedule-list">
-          ${planner
-            .map(
-              (item) => `
-                <div class="schedule-item">
-                  <time>${item.time}</time>
-                  <div class="task-title">${item.title}</div>
-                  <span class="chip">${item.type}</span>
-                </div>
-              `
-            )
-            .join('')}
+          ${state.tasks.filter((task) => task.blocked || task.status === 'waiting').map(renderTaskCard).join('')}
         </div>
       </div>
     </section>
@@ -372,46 +477,99 @@ function renderPage() {
   const currentPage = state.currentPage;
   let html = '';
 
-  pageTitleEl.textContent = nav.find((item) => item.id === currentPage)?.label || 'Today';
+  pageTitleEl.textContent = window.dashboardData.nav.find((item) => item.id === currentPage)?.label || 'Today';
 
-  if (currentPage === 'today') {
-    html = renderTodayPage();
-  } else if (currentPage === 'content') {
-    html = renderContentPage();
-  } else if (currentPage === 'tasks') {
-    html = renderTasksPage();
-  } else if (currentPage === 'seo') {
-    html = renderSeoPage();
-  } else if (currentPage === 'clients') {
-    html = renderClientsPage();
-  } else if (currentPage === 'revenue') {
-    html = renderRevenuePage();
-  } else if (currentPage === 'needs-ophelia') {
-    html = renderNeedsOpheliaPage();
-  } else if (currentPage === 'waiting') {
-    html = renderWaitingPage();
+  switch (currentPage) {
+    case 'today':
+      html = renderTodayPage();
+      break;
+    case 'content':
+      html = renderContentPage();
+      break;
+    case 'tasks':
+      html = renderTasksPage();
+      break;
+    case 'planner':
+      html = renderPlannerPage();
+      break;
+    case 'seo':
+      html = renderSeoPage();
+      break;
+    case 'clients':
+      html = renderClientsPage();
+      break;
+    case 'revenue':
+      html = renderRevenuePage();
+      break;
+    case 'needs-ophelia':
+      html = renderNeedsOpheliaPage();
+      break;
+    case 'waiting':
+      html = renderWaitingPage();
+      break;
+    default:
+      html = renderTodayPage();
   }
 
-  pageContentEl.innerHTML = html + renderPlannerOutput();
+  pageContentEl.innerHTML = html;
 }
 
-function onPlanDay() {
-  // Keep the simple planner output visible without adding duplicates.
+function handleTaskForm(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+
+  const title = (formData.get('title') || '').toString().trim();
+  if (!title) return;
+
+  const newTask = {
+    id: `task-${Date.now()}`,
+    title,
+    area: formData.get('area') || 'Content production',
+    status: 'active',
+    priority: formData.get('priority') || 'medium',
+    due: formData.get('due') || 'Today',
+    owner: 'Ophelia',
+    executor: 'Manual task',
+    notes: (formData.get('notes') || '').toString().trim() || 'New task added from the dashboard.',
+    requiresOphelia: false,
+    blocked: false,
+    duration: 30,
+    energy: 'admin'
+  };
+
+  state.tasks.unshift(newTask);
+  saveState();
+  form.reset();
   render();
 }
 
-function onAddAppointment() {
+function handlePlanDay() {
+  state.currentPage = 'planner';
+  saveState();
+  render();
+}
+
+function handleAddAppointment() {
   const title = window.prompt('Appointment title');
   if (!title) return;
   const time = window.prompt('Time (e.g. 15:30)');
   if (!time) return;
 
-  window.dashboardData.appointments.push({ time, title });
-  alert(`Added: ${time} — ${title}`);
+  state.appointments.push({ time, title });
+  saveState();
+  render();
 }
 
-document.getElementById('plan-day').addEventListener('click', onPlanDay);
-document.getElementById('add-appointment').addEventListener('click', onAddAppointment);
+document.getElementById('plan-day').addEventListener('click', handlePlanDay);
+document.getElementById('add-appointment').addEventListener('click', handleAddAppointment);
+
+document.addEventListener('submit', (event) => {
+  if (event.target && event.target.id === 'new-task-form') {
+    handleTaskForm(event);
+  }
+});
 
 function render() {
   renderNav();

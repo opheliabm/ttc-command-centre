@@ -28,6 +28,17 @@ This project is a demo workspace for tracking work, content packages and SEO tas
 1. Open `index.html` in a browser.
 2. Update the data in `data.js` to reflect your real tasks and content pipeline.
 3. Refresh the page to see the updates.
+4. Add tasks from the dashboard form or use the planner view.
+
+## Included features
+
+- Today dashboard
+- Content package cards
+- SEO + website audit section
+- Quick links to your main tools
+- Planner view for daily suggestions
+- Local browser storage for task persistence
+- Simple task creation form
 
 ## Best use cases
 

@@ -3,6 +3,7 @@ window.dashboardData = {
     { id: "today", label: "Today" },
     { id: "content", label: "Content packages" },
     { id: "tasks", label: "Tasks" },
+    { id: "planner", label: "Planner" },
     { id: "seo", label: "Website & SEO" },
     { id: "clients", label: "Clients" },
     { id: "revenue", label: "Revenue / Leads" },
@@ -37,7 +38,9 @@ window.dashboardData = {
       executor: "Editor workflow",
       notes: "Remove false starts and tighten the story before handoff to the next stage.",
       requiresOphelia: false,
-      blocked: false
+      blocked: false,
+      duration: 90,
+      energy: "focused"
     },
     {
       id: "task-002",
@@ -50,7 +53,9 @@ window.dashboardData = {
       executor: "Visual workflow",
       notes: "Prepare thumbnails and confirm the brand treatment before publishing.",
       requiresOphelia: false,
-      blocked: false
+      blocked: false,
+      duration: 50,
+      energy: "creative"
     },
     {
       id: "task-003",
@@ -63,7 +68,9 @@ window.dashboardData = {
       executor: "SEO checklist",
       notes: "Review headings, search intent, metadata and AI-search readability.",
       requiresOphelia: true,
-      blocked: false
+      blocked: false,
+      duration: 60,
+      energy: "analysis"
     },
     {
       id: "task-004",
@@ -76,7 +83,9 @@ window.dashboardData = {
       executor: "CRM / email",
       notes: "Send a short follow-up and confirm the next action.",
       requiresOphelia: true,
-      blocked: false
+      blocked: false,
+      duration: 30,
+      energy: "admin"
     },
     {
       id: "task-005",
@@ -89,7 +98,9 @@ window.dashboardData = {
       executor: "Publishing checklist",
       notes: "Draft a post with CTA, proof and a service highlight.",
       requiresOphelia: false,
-      blocked: false
+      blocked: false,
+      duration: 35,
+      energy: "creative"
     },
     {
       id: "task-006",
@@ -102,7 +113,9 @@ window.dashboardData = {
       executor: "CRM setup",
       notes: "Wait for final pipeline structure and dedupe rules before beginning imports.",
       requiresOphelia: true,
-      blocked: true
+      blocked: true,
+      duration: 45,
+      energy: "admin"
     }
   ],
   contentPackages: [
@@ -162,5 +175,9 @@ window.dashboardData = {
       level: "High",
       notes: "Verify there are clear answers, topical authority and strong internal linking."
     }
+  ],
+  appointments: [
+    { time: "10:00", title: "Client review call" },
+    { time: "14:00", title: "Design checkpoint" }
   ]
 };
