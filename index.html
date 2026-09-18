@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TTC Command Centre</title>
+    <meta
+      name="description"
+      content="TTC Command Centre — a calm operations dashboard for content, SEO, publishing, and daily priorities."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <div class="brand-mark">TTC</div>
+          <div>
+            <div class="brand-name">Command Centre</div>
+            <div class="brand-subtitle">Demo workspace</div>
+          </div>
+        </div>
+
+        <nav id="nav" aria-label="Main navigation"></nav>
+
+        <div class="sidebar-section">
+          <div class="section-label">Quick links</div>
+          <div id="quick-links"></div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">Daily operations</div>
+            <h1 id="page-title">Today</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="secondary-button" id="plan-day">Plan my day</button>
+            <button class="primary-button" id="add-appointment">Add appointment</button>
+          </div>
+        </header>
+
+        <div id="page-content"></div>
+      </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
