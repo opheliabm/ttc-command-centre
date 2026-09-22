@@ -1,6 +1,6 @@
 window.dashboardData = {
   nav: [
-    { id: "today", label: "Today" },
+    { id: "today", label: "Dashboard" },
     { id: "content", label: "Content packages" },
     { id: "tasks", label: "Tasks" },
     { id: "planner", label: "Planner" },
@@ -177,7 +177,162 @@ window.dashboardData = {
     }
   ],
   appointments: [
-    { time: "10:00", title: "Client review call" },
-    { time: "14:00", title: "Design checkpoint" }
-  ]
+    { id: "appt-001", time: "10:00", title: "Client review call" },
+    { id: "appt-002", time: "14:00", title: "Design checkpoint" }
+  ],
+  opsRituals: [
+    { id: "ritual-001", title: "Publish cadence check", area: "Publishing" },
+    { id: "ritual-002", title: "GBP post", area: "Publishing" },
+    { id: "ritual-003", title: "SEO spot-check", area: "Website & SEO" }
+  ],
+  ritualCompletions: {
+    "ritual-001": [true, true, false, false, false, false, false],
+    "ritual-002": [false, true, false, false, false, false, false],
+    "ritual-003": [true, false, true, false, false, false, false]
+  },
+  mindsetByDay: [
+    { energy: 4, mood: 4, focus: 3 },
+    { energy: 3, mood: 4, focus: 4 },
+    { energy: 3, mood: 3, focus: 3 },
+    null,
+    null,
+    null,
+    null
+  ],
+  weeklyReview: {
+    weekOf: "",
+    shipped: "",
+    blocked: "",
+    needsOphelia: "",
+    notes: ""
+  },
+  clients: [
+    {
+      id: "client-001",
+      name: "Harbour Dental",
+      status: "active",
+      nextAction: "Send edited episode cut",
+      blockedBy: "",
+      notes: "Monthly video retainer"
+    },
+    {
+      id: "client-002",
+      name: "Northside Physio",
+      status: "onboarding",
+      nextAction: "Confirm brand assets",
+      blockedBy: "Waiting on logo files",
+      notes: "New website + GBP"
+    },
+    {
+      id: "client-003",
+      name: "Cedar Coaching",
+      status: "paused",
+      nextAction: "Re-engage for Q4 content",
+      blockedBy: "Budget review on their side",
+      notes: "Past SEO project"
+    }
+  ],
+  revenueLeads: [
+    {
+      id: "lead-001",
+      name: "Summit Law — proposal",
+      stage: "proposal",
+      value: "£2.4k",
+      nextFollowUp: "Tomorrow",
+      notes: "Landing page + content starter"
+    },
+    {
+      id: "lead-002",
+      name: "Bloom Cafe — follow-up",
+      stage: "follow-up",
+      value: "£900",
+      nextFollowUp: "Today",
+      notes: "GBP + short-form package"
+    },
+    {
+      id: "lead-003",
+      name: "Atlas Fitness — discovery",
+      stage: "discovery",
+      value: "£1.5k",
+      nextFollowUp: "This week",
+      notes: "Interested in video + SEO"
+    },
+    {
+      id: "lead-004",
+      name: "River Studio — won",
+      stage: "won",
+      value: "£1.2k",
+      nextFollowUp: "",
+      notes: "Kickoff scheduled"
+    },
+    {
+      id: "lead-005",
+      name: "Pine Retail — lost",
+      stage: "lost",
+      value: "£800",
+      nextFollowUp: "",
+      notes: "Went in-house"
+    }
+  ],
+  personal: {
+    nav: [
+      { id: "today", label: "Today" },
+      { id: "habits", label: "Habits" },
+      { id: "weekly", label: "Weekly grid" },
+      { id: "tasks", label: "One-off tasks" },
+      { id: "mindset", label: "Mindset" }
+    ],
+    links: [
+      { label: "Notes", url: "#" },
+      { label: "Calendar", url: "#" },
+      { label: "Journal", url: "#" }
+    ],
+    habits: [
+      { id: "habit-001", title: "Morning stretch", color: "coral", streak: 4 },
+      { id: "habit-002", title: "Read 20 minutes", color: "teal", streak: 7 },
+      { id: "habit-003", title: "Drink water", color: "blue", streak: 12 },
+      { id: "habit-004", title: "Evening wind-down", color: "violet", streak: 2 },
+      { id: "habit-005", title: "No phone after 10", color: "amber", streak: 1 }
+    ],
+    tasks: [
+      {
+        id: "ptask-001",
+        title: "Book dentist check-up",
+        area: "Life admin",
+        status: "active",
+        priority: "medium",
+        due: "This week",
+        notes: "One-off — not a recurring habit.",
+        done: false
+      },
+      {
+        id: "ptask-002",
+        title: "Order new notebooks",
+        area: "Home",
+        status: "active",
+        priority: "low",
+        due: "Whenever",
+        notes: "Nice to have, not urgent.",
+        done: false
+      }
+    ],
+    // completions[habitId][dayIndex 0=Sun .. 6=Sat] = true/false for current week demo
+    completions: {
+      "habit-001": [true, true, true, true, false, false, false],
+      "habit-002": [true, true, true, true, true, true, true],
+      "habit-003": [true, true, false, true, true, true, true],
+      "habit-004": [false, true, true, false, false, false, false],
+      "habit-005": [true, false, false, false, false, false, false]
+    },
+    // mindsetByDay[dayIndex] = { energy, mood, focus } 1–5, null if not set
+    mindsetByDay: [
+      { energy: 4, mood: 4, focus: 3 },
+      { energy: 3, mood: 4, focus: 4 },
+      { energy: 2, mood: 3, focus: 2 },
+      { energy: 4, mood: 5, focus: 4 },
+      { energy: 3, mood: 3, focus: 3 },
+      null,
+      null
+    ]
+  }
 };
