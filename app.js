@@ -301,7 +301,7 @@ function updatePageTitleArt() {
   const host = document.getElementById('page-title-art');
   if (!host || !window.TTC_ILLUSTRATIONS) return;
   // Avoid stacking the same doodle next to a page intro that already shows it
-  if (isPersonal() || state.currentPage === 'today') {
+  if (isPersonal() || isFramer() || state.currentPage === 'today') {
     host.innerHTML = '';
     return;
   }
@@ -378,7 +378,8 @@ function createDefaultState() {
     liturgy: null,
     liturgyStatus: 'idle',
     liturgyError: '',
-    personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.seed() : { currentPage: 'today', habits: [], tasks: [], links: [], completions: {}, mindsetByDay: [] }
+    personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.seed() : { currentPage: 'today', habits: [], tasks: [], links: [], completions: {}, mindsetByDay: [] },
+    framer: window.TTC_FRAMER ? window.TTC_FRAMER.seed() : { currentPage: 'today', tasks: [], projects: [], prospects: [], weeklyReviews: [], links: [] }
   };
 }
 
@@ -392,7 +393,7 @@ function mergeLoadedState(parsed) {
   const colours = asObject(data.colours);
   return {
     ...defaults,
-    workspace: data.workspace === 'personal' ? 'personal' : 'business',
+    workspace: ['business', 'personal', 'framer'].includes(data.workspace) ? data.workspace : 'business',
     currentPage: typeof data.currentPage === 'string' ? data.currentPage : defaults.currentPage,
     theme: data.theme === 'dark' ? 'dark' : 'light',
     tasks: tasks.length ? tasks : defaults.tasks,
@@ -424,7 +425,8 @@ function mergeLoadedState(parsed) {
     liturgy: null,
     liturgyStatus: 'idle',
     liturgyError: '',
-    personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.merge(data.personal) : defaults.personal
+    personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.merge(data.personal) : defaults.personal,
+    framer: window.TTC_FRAMER ? window.TTC_FRAMER.merge(data.framer) : defaults.framer
   };
 }
 
@@ -459,7 +461,8 @@ function persistableState(current) {
     colours: current.colours,
     dashboardOrder: current.dashboardOrder,
     liturgyLang: current.liturgyLang,
-    personal: current.personal
+    personal: current.personal,
+    framer: current.framer
   };
 }
 
@@ -507,6 +510,10 @@ function isPersonal() {
   return state.workspace === 'personal';
 }
 
+function isFramer() {
+  return state.workspace === 'framer';
+}
+
 function renderWorkspaceSwitch() {
   if (!workspaceSwitchEl) return;
   workspaceSwitchEl.innerHTML = `
@@ -515,6 +522,9 @@ function renderWorkspaceSwitch() {
     </button>
     <button type="button" class="workspace-btn ${state.workspace === 'personal' ? 'active' : ''}" data-workspace="personal">
       Personal
+    </button>
+    <button type="button" class="workspace-btn ${state.workspace === 'framer' ? 'active' : ''}" data-workspace="framer">
+      Framer
     </button>
   `;
 }
@@ -537,10 +547,18 @@ if (workspaceSwitchEl) {
 function renderShellChrome() {
   document.body.dataset.workspace = state.workspace || 'business';
   if (brandSubtitleEl) {
-    brandSubtitleEl.textContent = isPersonal() ? 'Personal tracker' : 'Business ops';
+    brandSubtitleEl.textContent = isFramer()
+      ? 'Framer readiness'
+      : isPersonal()
+        ? 'Personal tracker'
+        : 'Business ops';
   }
   if (pageEyebrowEl) {
-    pageEyebrowEl.textContent = isPersonal() ? 'Quiet progress · personal' : 'Command overview';
+    pageEyebrowEl.textContent = isFramer()
+      ? 'Client readiness · Framer'
+      : isPersonal()
+        ? 'Quiet progress · personal'
+        : 'Command overview';
   }
   if (!topbarActionsEl) return;
 
@@ -555,7 +573,25 @@ function renderShellChrome() {
     </button>
   `;
 
-  if (isPersonal()) {
+  if (isFramer()) {
+    topbarActionsEl.innerHTML = `
+      ${themeToggleHtml}
+      <button class="secondary-button" id="open-framer-learning" type="button">Learning</button>
+      <button class="primary-button" id="open-framer-pipeline" type="button">Pipeline</button>
+    `;
+    document.getElementById('open-framer-learning')?.addEventListener('click', () => {
+      if (!state.framer) state.framer = window.TTC_FRAMER ? window.TTC_FRAMER.seed() : {};
+      state.framer.currentPage = 'learning';
+      saveState();
+      render();
+    });
+    document.getElementById('open-framer-pipeline')?.addEventListener('click', () => {
+      if (!state.framer) state.framer = window.TTC_FRAMER ? window.TTC_FRAMER.seed() : {};
+      state.framer.currentPage = 'pipeline';
+      saveState();
+      render();
+    });
+  } else if (isPersonal()) {
     topbarActionsEl.innerHTML = `
       ${themeToggleHtml}
       <button class="secondary-button" id="open-weekly" type="button">Weekly grid</button>
@@ -659,6 +695,26 @@ function getFilteredTasks(sourceTasks) {
 /* —— Render helpers —— */
 
 function renderNav() {
+  if (isFramer() && window.TTC_FRAMER) {
+    const items = window.TTC_FRAMER.navItems();
+    const current = state.framer?.currentPage || 'today';
+    navEl.innerHTML = `
+      <div class="nav-group">
+        <div class="nav-group-label">Framer</div>
+        ${items.map((item) => {
+          const active = item.id === current ? 'active' : '';
+          return `
+            <button class="nav-item ${active}" type="button" data-page="${escapeHtml(item.id)}">
+              <span class="dot" aria-hidden="true"></span>
+              ${escapeHtml(item.label)}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
+    return;
+  }
+
   if (isPersonal() && window.TTC_PERSONAL) {
     const items = window.TTC_PERSONAL.navItems();
     const current = state.personal?.currentPage || 'today';
@@ -704,9 +760,17 @@ function renderNav() {
 }
 
 function renderQuickLinks() {
-  const links = isPersonal() ? (state.personal?.links || []) : state.links;
+  const links = isFramer()
+    ? (state.framer?.links || [])
+    : isPersonal()
+      ? (state.personal?.links || [])
+      : state.links;
   if (quickLinksLabelEl) {
-    quickLinksLabelEl.textContent = isPersonal() ? 'Personal links' : 'Quick links';
+    quickLinksLabelEl.textContent = isFramer()
+      ? 'Framer tools'
+      : isPersonal()
+        ? 'Personal links'
+        : 'Quick links';
   }
   quickLinksEl.innerHTML = `
     <div class="quick-link-list">
@@ -1142,7 +1206,7 @@ function renderLiturgyStrip() {
 let liturgyFetchToken = 0;
 
 function ensureLiturgyLoaded() {
-  if (isPersonal()) return;
+  if (isPersonal() || isFramer()) return;
   if (!window.TTC_LITURGY || typeof window.TTC_LITURGY.fetchToday !== 'function') return;
   if (state.currentPage !== 'today') return;
 
@@ -1458,6 +1522,27 @@ function renderWaitingPage() {
 
 function renderPage() {
   let html = '';
+
+  if (isFramer() && window.TTC_FRAMER) {
+    const pageId = state.framer?.currentPage || 'today';
+    pageTitleEl.textContent =
+      window.TTC_FRAMER.navItems().find((item) => item.id === pageId)?.label || 'Today';
+
+    document.body.className = document.body.className
+      .split(/\s+/)
+      .filter((cls) => cls && cls !== 'modal-open' && !cls.startsWith('page-'))
+      .concat(`page-framer-${pageId}`)
+      .concat(document.body.classList.contains('modal-open') ? 'modal-open' : [])
+      .join(' ')
+      .trim();
+
+    pageContentEl.innerHTML = window.TTC_FRAMER.renderPage(state.framer, pageId);
+    window.TTC_FRAMER.bind(state.framer, {
+      save: saveState,
+      render
+    });
+    return;
+  }
 
   if (isPersonal() && window.TTC_PERSONAL) {
     const pageId = state.personal?.currentPage || 'today';
@@ -2124,7 +2209,10 @@ function onDocumentClick(event) {
   if (!target) return;
 
   if (target.dataset.page) {
-    if (isPersonal()) {
+    if (isFramer()) {
+      if (!state.framer) state.framer = window.TTC_FRAMER ? window.TTC_FRAMER.seed() : {};
+      state.framer.currentPage = target.dataset.page;
+    } else if (isPersonal()) {
       if (!state.personal) state.personal = window.TTC_PERSONAL ? window.TTC_PERSONAL.seed() : {};
       state.personal.currentPage = target.dataset.page;
     } else {
@@ -2246,7 +2334,7 @@ function render() {
   renderSidebarCompanion();
   renderPage();
   updatePageTitleArt();
-  if (!isPersonal()) {
+  if (!isPersonal() && !isFramer()) {
     bindToolbarEvents();
     bindPageEvents();
   }

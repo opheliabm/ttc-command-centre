@@ -23,6 +23,8 @@ This project is a demo workspace for tracking work, content packages and SEO tas
 - `illustrations.js`
 - `liturgy.js` — Daily Gospel / Evangelizo feed helper
 - `personal.js` — Personal tracker (habits, weekly grid, mindset)
+- `framer-data.js` — Framer Client Readiness seed (tasks, metrics, projects, prospects)
+- `framer.js` — Framer readiness workspace UI + local edit/save
 - `data.js`
 - `app.js`
 - `README.md`
@@ -33,8 +35,9 @@ This project is a demo workspace for tracking work, content packages and SEO tas
 
 - **Business** — editorial ops dashboard (Dashboard, tasks, content, SEO, liturgy, Customise)
 - **Personal** — separate habit / mindset tracker (Today, Habits, Weekly grid, One-off tasks, Mindset)
+- **Framer** — Client Readiness plan (Today, Learning, Projects, Pipeline, Weekly review; LinkedIn later)
 
-Switch with the Business | Personal control in the sidebar.
+Switch with the Business | Personal | Framer control in the sidebar. Framer tasks and prospects edit and save in local browser storage.
 ## Visual system
 
 - Minimal editorial newsletter layout (paper canvas, oversized display type, mono metadata)
