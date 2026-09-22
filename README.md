@@ -52,7 +52,7 @@ This project is a demo workspace for tracking work, content packages and SEO tas
 
 - Keep client or business data private and do not put private links or API keys in a public repo.
 - This is a safe demo build and intentionally uses placeholder examples.
-- This is the MVP version. It can be expanded later with localStorage, custom task editing, and a stronger planner.
+- This repo is the **Phase 1 prototype**. See [ROADMAP.md](ROADMAP.md) for Phase 2+ (Quiet Progress–inspired weekly rings, mindset check-in, ops rituals) and Phase 3 ops completeness.
 
 ## Quick start
 
