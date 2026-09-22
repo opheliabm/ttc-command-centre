@@ -2014,13 +2014,23 @@ body[data-workspace="framer"] .urgent-box.framer-tone strong {
   color: var(--muted);
 }
 
-.framer-task-card .task-id-row,
-.framer-prospect-card .task-id-row {
+.framer-task-card,
+.framer-prospect-card {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.framer-task-card .task-main,
+.framer-prospect-card .task-main {
+  min-width: 0;
+}
+
+.framer-task-card .task-meta,
+.framer-prospect-card .task-meta {
   display: flex;
   flex-wrap: wrap;
+  gap: 8px 10px;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
 }
 
 .task-id {
