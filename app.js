@@ -300,16 +300,22 @@ function triggerArt(mood, options) {
 function updatePageTitleArt() {
   const host = document.getElementById('page-title-art');
   if (!host || !window.TTC_ILLUSTRATIONS) return;
-  if (isPersonal()) {
-    host.innerHTML = '';
-    return;
-  }
-  const name = window.TTC_ILLUSTRATIONS.pageMap[state.currentPage] || 'empty';
+  const pageKey = isPersonal()
+    ? `personal-${state.personal?.currentPage || 'today'}`
+    : state.currentPage;
+  const name = window.TTC_ILLUSTRATIONS.pageMap[pageKey] || (isPersonal() ? 'personal' : 'empty');
   host.setAttribute('aria-hidden', 'true');
   host.className = 'illustration illustration--compact illustration--title';
   const markup = window.TTC_ILLUSTRATIONS.render(name, { size: 'compact' });
   const match = markup.match(/<svg[\s\S]*<\/svg>/i);
   host.innerHTML = match ? match[0] : '';
+}
+
+function renderSidebarCompanion() {
+  const host = document.getElementById('sidebar-companion');
+  if (!host || !window.TTC_ILLUSTRATIONS) return;
+  const scene = isPersonal() ? 'personal' : 'today';
+  host.innerHTML = window.TTC_ILLUSTRATIONS.render(scene, { size: 'section', className: 'sidebar-companion-art' });
 }
 
 
@@ -2232,6 +2238,7 @@ function render() {
   renderShellChrome();
   renderNav();
   renderQuickLinks();
+  renderSidebarCompanion();
   renderPage();
   updatePageTitleArt();
   if (!isPersonal()) {

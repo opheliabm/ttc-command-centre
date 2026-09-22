@@ -144,6 +144,25 @@
     `;
   }
 
+  function art(name, size) {
+    if (global.TTC_ILLUSTRATIONS && typeof global.TTC_ILLUSTRATIONS.render === 'function') {
+      return global.TTC_ILLUSTRATIONS.render(name, { size: size || 'section' });
+    }
+    return '';
+  }
+
+  function intro(lede, scene) {
+    return `
+      <div class="personal-intro">
+        <div class="personal-intro-copy">
+          <p class="personal-intro-kicker">Keep it light</p>
+          <p class="personal-intro-lede">${escapeHtml(lede)}</p>
+        </div>
+        ${art(scene, 'section')}
+      </div>
+    `;
+  }
+
   function dayLabel() {
     return new Date().toLocaleDateString('en-US', {
       weekday: 'long',
@@ -157,9 +176,10 @@
     const today = todayIndex();
     const openTasks = (personal.tasks || []).filter((task) => !task.done);
     return `
+      ${intro('Small consistent actions beat a perfect week. Tick a habit — watch the doodles cheer.', 'personal')}
       <section class="page-section">
         <div class="urgent-box personal-tone">
-          <strong>Today:</strong> ${escapeHtml(dayLabel())} · small consistent actions beat a perfect week.
+          <strong>Today:</strong> ${escapeHtml(dayLabel())} · progress over perfection.
         </div>
       </section>
       <section class="page-section">
@@ -183,7 +203,7 @@
         </div>
       </section>
       <section class="page-section">
-        <div class="section-header"><h2>Today’s habits</h2></div>
+        <div class="section-header"><h2>Today’s habits</h2>${art('habits', 'compact')}</div>
         <div class="panel-card">
           <div class="habit-list">
             ${personal.habits.map((habit) => habitRow(personal, habit, today)).join('')}
@@ -206,9 +226,8 @@
 
   function renderHabits(personal) {
     return `
+      ${intro('Recurring practices only — one-offs live on their own page.', 'habits')}
       <section class="page-section">
-        <div class="section-header"><h2>Habits</h2></div>
-        <p class="soft-note">Recurring practices — separate from one-off personal tasks.</p>
         <div class="panel-card">
           <div class="habit-list">
             ${personal.habits.map((habit) => habitRow(personal, habit, todayIndex())).join('')}
@@ -245,9 +264,8 @@
 
   function renderWeekly(personal) {
     return `
+      ${intro('Scan the week at a glance. Tick what you did — leave the rest.', 'weekly')}
       <section class="page-section">
-        <div class="section-header"><h2>Weekly grid</h2></div>
-        <p class="soft-note">Plan the week without overwhelm. Tick what you did — leave the rest.</p>
         <div class="weekly-scroll">
           <div class="weekly-grid">
             <div class="weekly-corner"></div>
@@ -279,8 +297,8 @@
 
   function renderTasks(personal) {
     return `
+      ${intro('One-off life admin — not habits. Get it out of your head.', 'personal')}
       <section class="page-section">
-        <div class="section-header"><h2>One-off tasks</h2></div>
         <div class="panel-card">
           <div class="list">
             ${(personal.tasks || []).map(simpleTaskCard).join('') || '<div class="empty-state">No personal tasks yet.</div>'}
@@ -320,6 +338,7 @@
 
   function renderMindset(personal) {
     return `
+      ${intro('Energy, mood, focus — notice the pattern without judging it.', 'mindset')}
       <section class="page-section">
         <div class="panel-card">${checkIn(personal, false)}</div>
       </section>
@@ -377,6 +396,10 @@
         if (input.checked) {
           const habit = personal.habits.find((item) => item.id === habitId);
           if (habit && day === todayIndex()) habit.streak = (habit.streak || 0) + 1;
+          if (global.TTC_ILLUSTRATIONS && typeof global.TTC_ILLUSTRATIONS.react === 'function') {
+            const row = input.closest('.habit-row, .weekly-cell');
+            global.TTC_ILLUSTRATIONS.react('happy', { anchor: row || undefined, duration: 1100 });
+          }
         }
         save();
         render();
@@ -419,6 +442,9 @@
           streak: 0
         });
         personal.completions[id] = [false, false, false, false, false, false, false];
+        if (global.TTC_ILLUSTRATIONS && typeof global.TTC_ILLUSTRATIONS.react === 'function') {
+          global.TTC_ILLUSTRATIONS.react('nod', { duration: 900 });
+        }
         save();
         render();
       });

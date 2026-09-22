@@ -13,6 +13,7 @@
   const BLUE = '#8fb8ff';
   const LAVENDER = '#c9a8e8';
   const CORAL_SOFT = 'var(--coral-soft, #f0d5da)';
+  const SOFT_LINE = '#d8d8d4';
   const OUTLINE = INK;
   const VB = '0 0 200 160';
 
@@ -341,6 +342,168 @@
       </g>
     `,
         'illustration-scene--success'
+      ),
+
+    personal: () =>
+      wrap(
+        `
+      <ellipse class="ill-blob illustration-breathe" cx="44" cy="120" rx="36" ry="18" fill="${TEAL}"/>
+      <ellipse class="ill-blob illustration-float" cx="168" cy="40" rx="26" ry="18" fill="${YELLOW}"/>
+
+      <!-- progress ring -->
+      <g class="illustration-pop">
+        <circle cx="132" cy="78" r="34" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <circle cx="132" cy="78" r="24" fill="none" stroke="${SOFT_LINE}" stroke-width="6"/>
+        <circle class="illustration-ring-draw" cx="132" cy="78" r="24" fill="none" stroke="${CORAL}" stroke-width="6" stroke-linecap="round"
+          stroke-dasharray="110 151" transform="rotate(-90 132 78)"/>
+        <text x="132" y="84" text-anchor="middle" font-size="16" font-family="IBM Plex Mono, monospace" font-weight="700" fill="${OUTLINE}">74%</text>
+      </g>
+
+      <!-- habit ticks -->
+      <g class="illustration-float" style="--ill-delay:0.2s">
+        <rect x="28" y="48" width="52" height="18" rx="5" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <path class="illustration-check-pop" d="M36 57 L42 62 L52 52" fill="none" stroke="${CORAL}" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g class="illustration-float" style="--ill-delay:0.55s">
+        <rect x="34" y="74" width="48" height="18" rx="5" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <path class="illustration-check-pop" style="--ill-delay:0.4s" d="M42 83 L47 88 L58 78" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <g class="illustration-float" style="--ill-delay:0.9s">
+        <rect x="40" y="100" width="44" height="18" rx="5" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle cx="52" cy="109" r="4" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.6"/>
+      </g>
+
+      <!-- character waving -->
+      <g class="illustration-breathe illustration-sway">
+        <circle cx="70" cy="132" r="14" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle class="illustration-blink" cx="65" cy="130" r="1.8" fill="${OUTLINE}"/>
+        <circle class="illustration-blink" cx="75" cy="130" r="1.8" fill="${OUTLINE}"/>
+        <path d="M66 138 Q70 142 75 138" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
+        <path class="illustration-wave-arm" d="M58 140 Q48 128 42 118" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+
+      <g class="illustration-sparkle illustration-bounce">
+        <path d="M168 88 L170 94 L176 96 L170 98 L168 104 L166 98 L160 96 L166 94 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.1"/>
+        <circle cx="156" cy="70" r="2.4" fill="${CORAL}"/>
+      </g>
+    `,
+        'illustration-scene--personal'
+      ),
+
+    habits: () =>
+      wrap(
+        `
+      <ellipse class="ill-blob illustration-breathe" cx="160" cy="120" rx="34" ry="18" fill="${LAVENDER}"/>
+      <ellipse class="ill-blob" cx="36" cy="40" rx="26" ry="18" fill="${YELLOW}"/>
+
+      <!-- streak flame -->
+      <g class="illustration-bounce">
+        <path d="M48 108 C48 88, 68 84, 72 68 C86 88, 92 98, 92 112 C92 128, 78 136, 64 136 C52 136, 48 124, 48 108Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        <path d="M64 118 C64 108, 74 106, 76 98 C82 108, 82 116, 76 122 C72 126, 66 124, 64 118Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.5"/>
+      </g>
+
+      <!-- checklist -->
+      <g class="illustration-float">
+        <rect x="100" y="40" width="72" height="84" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <g class="illustration-check-pop">
+          <rect x="112" y="54" width="12" height="12" rx="2" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.5"/>
+          <path d="M114 60 L117 63 L122 57" fill="none" stroke="${PAPER}" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M132 60 H158" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+        <g class="illustration-check-pop" style="--ill-delay:0.5s">
+          <rect x="112" y="78" width="12" height="12" rx="2" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.5"/>
+          <path d="M114 84 L117 87 L122 81" fill="none" stroke="${PAPER}" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M132 84 H152" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+        <g>
+          <rect x="112" y="102" width="12" height="12" rx="2" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.5"/>
+          <path d="M132 108 H148" stroke="${WARM}" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+      </g>
+
+      <g class="illustration-sparkle">
+        <circle cx="88" cy="52" r="3" fill="${CORAL}"/>
+        <circle cx="78" cy="66" r="2" fill="${TEAL}"/>
+      </g>
+    `,
+        'illustration-scene--habits'
+      ),
+
+    weekly: () =>
+      wrap(
+        `
+      <ellipse class="ill-blob illustration-breathe" cx="40" cy="118" rx="32" ry="16" fill="${BLUE}"/>
+      <ellipse class="ill-blob" cx="168" cy="36" rx="24" ry="16" fill="${YELLOW}"/>
+
+      <!-- week grid -->
+      <g>
+        <rect x="48" y="44" width="120" height="84" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        ${[0, 1, 2, 3, 4, 5, 6]
+          .map((i) => {
+            const x = 56 + i * 15;
+            const delay = (i * 0.12).toFixed(2);
+            const fill = i % 2 === 0 ? TEAL : CORAL;
+            const h = 18 + ((i * 7) % 28);
+            return `
+              <g class="illustration-bar-grow" style="--ill-delay:${delay}s">
+                <rect x="${x}" y="${108 - h}" width="10" height="${h}" rx="2" fill="${fill}" stroke="${OUTLINE}" stroke-width="1.3"/>
+              </g>
+            `;
+          })
+          .join('')}
+      </g>
+
+      <!-- day rings -->
+      <g class="illustration-float">
+        <circle cx="64" cy="36" r="10" fill="none" stroke="${CORAL}" stroke-width="3"/>
+        <circle cx="90" cy="32" r="8" fill="none" stroke="${TEAL}" stroke-width="2.5"/>
+        <circle cx="114" cy="34" r="9" fill="none" stroke="${BLUE}" stroke-width="2.5"/>
+      </g>
+
+      <g class="illustration-sparkle illustration-bounce">
+        <path d="M158 78 L160 84 L166 86 L160 88 L158 94 L156 88 L150 86 L156 84 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1"/>
+      </g>
+    `,
+        'illustration-scene--weekly'
+      ),
+
+    mindset: () =>
+      wrap(
+        `
+      <ellipse class="ill-blob illustration-breathe" cx="160" cy="118" rx="30" ry="16" fill="${CORAL_SOFT}"/>
+      <ellipse class="ill-blob" cx="36" cy="44" rx="24" ry="16" fill="${LAVENDER}"/>
+
+      <!-- mood gauges -->
+      <g class="illustration-float">
+        <rect x="56" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <rect class="illustration-bar-grow" x="62" y="78" width="16" height="34" rx="3" fill="${CORAL}"/>
+        <text x="70" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">E</text>
+      </g>
+      <g class="illustration-float" style="--ill-delay:0.25s">
+        <rect x="96" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <rect class="illustration-bar-grow" style="--ill-delay:0.2s" x="102" y="66" width="16" height="46" rx="3" fill="${BLUE}"/>
+        <text x="110" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">M</text>
+      </g>
+      <g class="illustration-float" style="--ill-delay:0.5s">
+        <rect x="136" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <rect class="illustration-bar-grow" style="--ill-delay:0.35s" x="142" y="88" width="16" height="24" rx="3" fill="${TEAL}"/>
+        <text x="150" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">F</text>
+      </g>
+
+      <!-- heart / face -->
+      <g class="illustration-breathe illustration-sway">
+        <circle cx="46" cy="108" r="16" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle class="illustration-blink" cx="40" cy="106" r="2" fill="${OUTLINE}"/>
+        <circle class="illustration-blink" cx="52" cy="106" r="2" fill="${OUTLINE}"/>
+        <path d="M42 114 Q46 118 52 114" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+
+      <g class="illustration-sparkle">
+        <circle cx="172" cy="56" r="3" fill="${YELLOW}"/>
+        <circle cx="178" cy="70" r="2" fill="${CORAL}"/>
+      </g>
+    `,
+        'illustration-scene--mindset'
       )
   };
 
@@ -360,7 +523,17 @@
     clients: 'empty',
     revenue: 'revenue',
     'needs-ophelia': 'success',
-    waiting: 'waiting'
+    waiting: 'waiting',
+    // Personal workspace pages
+    personal: 'personal',
+    habits: 'habits',
+    weekly: 'weekly',
+    mindset: 'mindset',
+    'personal-today': 'personal',
+    'personal-habits': 'habits',
+    'personal-weekly': 'weekly',
+    'personal-tasks': 'personal',
+    'personal-mindset': 'mindset'
   };
 
   function render(name, options) {
@@ -408,7 +581,10 @@
 
     const hosts = [
       document.getElementById('page-title-art'),
+      document.getElementById('sidebar-companion'),
       document.querySelector('.dashboard-intro .illustration'),
+      document.querySelector('.personal-intro .illustration'),
+      document.querySelector('.page-hero-art .illustration'),
       document.querySelector('.liturgy-strip .illustration')
     ].filter(Boolean);
 
@@ -461,4 +637,26 @@
     pageMap,
     react
   };
+
+  // Gentle periodic wave so the UI keeps feeling alive (short attention span friendly)
+  let idleWaveTimer = null;
+  function startIdleWaves() {
+    if (idleWaveTimer) return;
+    const reduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    idleWaveTimer = window.setInterval(() => {
+      react('wave', { duration: 900 });
+    }, 11000);
+    window.setTimeout(() => react('wave', { duration: 900 }), 1800);
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startIdleWaves);
+    } else {
+      startIdleWaves();
+    }
+  }
 })();
