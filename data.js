@@ -1,6 +1,6 @@
 window.dashboardData = {
   nav: [
-    { id: "today", label: "Today" },
+    { id: "today", label: "Dashboard" },
     { id: "content", label: "Content packages" },
     { id: "tasks", label: "Tasks" },
     { id: "planner", label: "Planner" },
@@ -177,7 +177,7 @@ window.dashboardData = {
     }
   ],
   appointments: [
-    { time: "10:00", title: "Client review call" },
-    { time: "14:00", title: "Design checkpoint" }
+    { id: "appt-001", time: "10:00", title: "Client review call" },
+    { id: "appt-002", time: "14:00", title: "Design checkpoint" }
   ]
 };
