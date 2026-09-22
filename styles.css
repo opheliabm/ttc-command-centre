@@ -375,6 +375,10 @@ h1 {
   margin-bottom: 12px;
 }
 
+.section-header .illustration--compact {
+  width: 48px;
+}
+
 .section-heading {
   display: inline-flex;
   align-items: center;
