@@ -1,0 +1,16 @@
+{
+  "name": "TTC Command Centre",
+  "terminals": [
+    {
+      "name": "web",
+      "command": "python3 -m http.server 8000",
+      "description": "Static file server for the TTC Command Centre dashboard. Serves index.html/styles.css/data.js/app.js at http://localhost:8000. No build step or backend is required."
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 8000
+    }
+  ]
+}
