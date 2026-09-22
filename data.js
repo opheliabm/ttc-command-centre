@@ -179,8 +179,101 @@ window.dashboardData = {
   appointments: [
     { id: "appt-001", time: "10:00", title: "Client review call" },
     { id: "appt-002", time: "14:00", title: "Design checkpoint" }
-  ]
-,
+  ],
+  opsRituals: [
+    { id: "ritual-001", title: "Publish cadence check", area: "Publishing" },
+    { id: "ritual-002", title: "GBP post", area: "Publishing" },
+    { id: "ritual-003", title: "SEO spot-check", area: "Website & SEO" }
+  ],
+  ritualCompletions: {
+    "ritual-001": [true, true, false, false, false, false, false],
+    "ritual-002": [false, true, false, false, false, false, false],
+    "ritual-003": [true, false, true, false, false, false, false]
+  },
+  mindsetByDay: [
+    { energy: 4, mood: 4, focus: 3 },
+    { energy: 3, mood: 4, focus: 4 },
+    { energy: 3, mood: 3, focus: 3 },
+    null,
+    null,
+    null,
+    null
+  ],
+  weeklyReview: {
+    weekOf: "",
+    shipped: "",
+    blocked: "",
+    needsOphelia: "",
+    notes: ""
+  },
+  clients: [
+    {
+      id: "client-001",
+      name: "Harbour Dental",
+      status: "active",
+      nextAction: "Send edited episode cut",
+      blockedBy: "",
+      notes: "Monthly video retainer"
+    },
+    {
+      id: "client-002",
+      name: "Northside Physio",
+      status: "onboarding",
+      nextAction: "Confirm brand assets",
+      blockedBy: "Waiting on logo files",
+      notes: "New website + GBP"
+    },
+    {
+      id: "client-003",
+      name: "Cedar Coaching",
+      status: "paused",
+      nextAction: "Re-engage for Q4 content",
+      blockedBy: "Budget review on their side",
+      notes: "Past SEO project"
+    }
+  ],
+  revenueLeads: [
+    {
+      id: "lead-001",
+      name: "Summit Law — proposal",
+      stage: "proposal",
+      value: "£2.4k",
+      nextFollowUp: "Tomorrow",
+      notes: "Landing page + content starter"
+    },
+    {
+      id: "lead-002",
+      name: "Bloom Cafe — follow-up",
+      stage: "follow-up",
+      value: "£900",
+      nextFollowUp: "Today",
+      notes: "GBP + short-form package"
+    },
+    {
+      id: "lead-003",
+      name: "Atlas Fitness — discovery",
+      stage: "discovery",
+      value: "£1.5k",
+      nextFollowUp: "This week",
+      notes: "Interested in video + SEO"
+    },
+    {
+      id: "lead-004",
+      name: "River Studio — won",
+      stage: "won",
+      value: "£1.2k",
+      nextFollowUp: "",
+      notes: "Kickoff scheduled"
+    },
+    {
+      id: "lead-005",
+      name: "Pine Retail — lost",
+      stage: "lost",
+      value: "£800",
+      nextFollowUp: "",
+      notes: "Went in-house"
+    }
+  ],
   personal: {
     nav: [
       { id: "today", label: "Today" },

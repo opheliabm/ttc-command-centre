@@ -5,7 +5,7 @@
 
 const STORAGE_KEY = 'ttc-command-centre-demo-v1';
 
-const TASK_STATUSES = ['active', 'completed', 'waiting', 'blocked'];
+const TASK_STATUSES = ['active', 'completed', 'waiting', 'blocked', 'archived'];
 const TASK_PRIORITIES = ['high', 'medium', 'low'];
 const TASK_AREAS = [
   'Content production',
@@ -15,6 +15,19 @@ const TASK_AREAS = [
   'Revenue / leads',
   'Operations'
 ];
+const TASK_ENERGY = ['focused', 'creative', 'analysis', 'admin'];
+const DAY_LABELS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const CLIENT_STATUSES = ['active', 'onboarding', 'paused', 'churned'];
+const REVENUE_STAGES = ['discovery', 'proposal', 'follow-up', 'won', 'lost'];
+
+const AREA_COLOR_CLASS = {
+  'Content production': 'area-content',
+  Design: 'area-design',
+  'Website & SEO': 'area-seo',
+  Publishing: 'area-publishing',
+  'Revenue / leads': 'area-revenue',
+  Operations: 'area-operations'
+};
 
 const DEFAULT_DASHBOARD_ORDER = [
   'must-do',
@@ -117,6 +130,148 @@ function nowIso() {
 function createId(prefix) {
   const rand = Math.random().toString(36).slice(2, 8);
   return `${prefix}-${Date.now()}-${rand}`;
+}
+
+function todayDayIndex() {
+  return new Date().getDay();
+}
+
+function areaClass(area) {
+  return AREA_COLOR_CLASS[area] || 'area-operations';
+}
+
+function ringSvg(percent, size) {
+  size = size || 72;
+  const p = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+  const stroke = 7;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (p / 100) * circumference;
+  return `
+    <div class="progress-ring" style="width:${size}px;height:${size}px;" aria-label="${p}% complete">
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <circle class="ring-track" cx="${size / 2}" cy="${size / 2}" r="${radius}" stroke-width="${stroke}" />
+        <circle class="ring-value" cx="${size / 2}" cy="${size / 2}" r="${radius}" stroke-width="${stroke}"
+          stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" />
+      </svg>
+      <span class="ring-label">${p}%</span>
+    </div>
+  `;
+}
+
+function mustDoTasks(tasks) {
+  return asArray(tasks).filter(
+    (task) =>
+      task.status !== 'archived' &&
+      (task.due === 'Today' || task.priority === 'high') &&
+      task.status !== 'waiting'
+  );
+}
+
+function todayCompletion(tasks) {
+  const pool = mustDoTasks(tasks).filter((task) => task.status === 'active' || task.status === 'completed' || task.status === 'blocked');
+  if (!pool.length) return { percent: 0, done: 0, total: 0 };
+  const done = pool.filter((task) => task.status === 'completed').length;
+  return { percent: Math.round((done / pool.length) * 100), done, total: pool.length };
+}
+
+function dueToDayIndexes(due) {
+  const today = todayDayIndex();
+  const label = String(due || '').trim().toLowerCase();
+  if (label === 'today') return [today];
+  if (label === 'tomorrow') return [(today + 1) % 7];
+  if (label === 'this week') return [today, (today + 1) % 7, (today + 2) % 7].filter((d, i, arr) => arr.indexOf(d) === i);
+  const map = {
+    sun: 0,
+    sunday: 0,
+    mon: 1,
+    monday: 1,
+    tue: 2,
+    tuesday: 2,
+    wed: 3,
+    wednesday: 3,
+    thu: 4,
+    thursday: 4,
+    fri: 5,
+    friday: 5,
+    sat: 6,
+    saturday: 6
+  };
+  if (Object.prototype.hasOwnProperty.call(map, label)) return [map[label]];
+  return [today];
+}
+
+function tasksForDay(tasks, dayIndex) {
+  return asArray(tasks).filter((task) => {
+    if (task.status === 'archived') return false;
+    if (task.status === 'waiting') return false;
+    return dueToDayIndexes(task.due).includes(dayIndex);
+  });
+}
+
+function dayCompletion(tasks, rituals, ritualCompletions, dayIndex) {
+  const dayTasks = tasksForDay(tasks, dayIndex);
+  const ritualList = asArray(rituals);
+  let total = dayTasks.length + ritualList.length;
+  let done = dayTasks.filter((task) => task.status === 'completed').length;
+  ritualList.forEach((ritual) => {
+    if (ritualCompletions[ritual.id]?.[dayIndex]) done += 1;
+  });
+  if (!total) return 0;
+  return Math.round((done / total) * 100);
+}
+
+function defaultOpsRituals() {
+  const demo = window.dashboardData || {};
+  return asArray(demo.opsRituals).length
+    ? asArray(demo.opsRituals).map((item) => ({ ...item }))
+    : [
+        { id: 'ritual-001', title: 'Publish cadence check', area: 'Publishing' },
+        { id: 'ritual-002', title: 'GBP post', area: 'Publishing' },
+        { id: 'ritual-003', title: 'SEO spot-check', area: 'Website & SEO' }
+      ];
+}
+
+function defaultRitualCompletions(rituals) {
+  const demo = (window.dashboardData && window.dashboardData.ritualCompletions) || {};
+  const out = {};
+  asArray(rituals).forEach((ritual) => {
+    out[ritual.id] = Array.isArray(demo[ritual.id])
+      ? demo[ritual.id].slice(0, 7).concat([false, false, false, false, false, false, false]).slice(0, 7)
+      : [false, false, false, false, false, false, false];
+  });
+  return out;
+}
+
+function defaultMindsetByDay() {
+  const demo = window.dashboardData && window.dashboardData.mindsetByDay;
+  if (Array.isArray(demo) && demo.length === 7) return demo.map((d) => (d ? { ...d } : null));
+  return [null, null, null, null, null, null, null];
+}
+
+function defaultWeeklyReview() {
+  const demo = (window.dashboardData && window.dashboardData.weeklyReview) || {};
+  return {
+    weekOf: typeof demo.weekOf === 'string' ? demo.weekOf : '',
+    shipped: typeof demo.shipped === 'string' ? demo.shipped : '',
+    blocked: typeof demo.blocked === 'string' ? demo.blocked : '',
+    needsOphelia: typeof demo.needsOphelia === 'string' ? demo.needsOphelia : '',
+    notes: typeof demo.notes === 'string' ? demo.notes : ''
+  };
+}
+
+function defaultClients() {
+  return asArray(window.dashboardData && window.dashboardData.clients).map((c) => ({ ...c }));
+}
+
+function defaultRevenueLeads() {
+  return asArray(window.dashboardData && window.dashboardData.revenueLeads).map((l) => ({ ...l }));
+}
+
+function currentMindset(stateRef) {
+  const day = todayDayIndex();
+  const row = stateRef.mindsetByDay && stateRef.mindsetByDay[day];
+  return row || { energy: 3, mood: 3, focus: 3 };
 }
 
 function cloneDemoData() {
@@ -325,7 +480,7 @@ function renderSidebarCompanion() {
 
 
 function computeMetrics(tasks) {
-  const list = asArray(tasks);
+  const list = asArray(tasks).filter((task) => task.status !== 'archived');
   return {
     today: [
       {
@@ -378,6 +533,15 @@ function createDefaultState() {
     liturgy: null,
     liturgyStatus: 'idle',
     liturgyError: '',
+    opsRituals: (() => {
+      const rituals = defaultOpsRituals();
+      return rituals;
+    })(),
+    ritualCompletions: defaultRitualCompletions(defaultOpsRituals()),
+    mindsetByDay: defaultMindsetByDay(),
+    weeklyReview: defaultWeeklyReview(),
+    clients: defaultClients(),
+    revenueLeads: defaultRevenueLeads(),
     personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.seed() : { currentPage: 'today', habits: [], tasks: [], links: [], completions: {}, mindsetByDay: [] },
     framer: window.TTC_FRAMER ? window.TTC_FRAMER.seed() : { currentPage: 'today', tasks: [], projects: [], prospects: [], weeklyReviews: [], links: [] }
   };
@@ -425,6 +589,20 @@ function mergeLoadedState(parsed) {
     liturgy: null,
     liturgyStatus: 'idle',
     liturgyError: '',
+    opsRituals: asArray(data.opsRituals).length ? asArray(data.opsRituals) : defaults.opsRituals,
+    ritualCompletions:
+      data.ritualCompletions && typeof data.ritualCompletions === 'object'
+        ? { ...defaults.ritualCompletions, ...data.ritualCompletions }
+        : defaults.ritualCompletions,
+    mindsetByDay: Array.isArray(data.mindsetByDay) && data.mindsetByDay.length === 7
+      ? data.mindsetByDay
+      : defaults.mindsetByDay,
+    weeklyReview: {
+      ...defaults.weeklyReview,
+      ...(asObject(data.weeklyReview) || {})
+    },
+    clients: asArray(data.clients).length ? asArray(data.clients) : defaults.clients,
+    revenueLeads: asArray(data.revenueLeads).length ? asArray(data.revenueLeads) : defaults.revenueLeads,
     personal: window.TTC_PERSONAL ? window.TTC_PERSONAL.merge(data.personal) : defaults.personal,
     framer: window.TTC_FRAMER ? window.TTC_FRAMER.merge(data.framer) : defaults.framer
   };
@@ -461,6 +639,12 @@ function persistableState(current) {
     colours: current.colours,
     dashboardOrder: current.dashboardOrder,
     liturgyLang: current.liturgyLang,
+    opsRituals: current.opsRituals,
+    ritualCompletions: current.ritualCompletions,
+    mindsetByDay: current.mindsetByDay,
+    weeklyReview: current.weeklyReview,
+    clients: current.clients,
+    revenueLeads: current.revenueLeads,
     personal: current.personal,
     framer: current.framer
   };
@@ -665,6 +849,8 @@ function getFilteredTasks(sourceTasks) {
 
   if (state.filters.status !== 'all') {
     list = list.filter((task) => task.status === state.filters.status);
+  } else {
+    list = list.filter((task) => task.status !== 'archived');
   }
   if (state.filters.priority !== 'all') {
     list = list.filter((task) => task.priority === state.filters.priority);
@@ -813,6 +999,8 @@ function renderTaskActions(task) {
     <div class="task-actions">
       <button class="inline-button" type="button" data-action="edit-task" data-id="${escapeHtml(task.id)}">Edit</button>
       <button class="inline-button" type="button" data-action="toggle-complete" data-id="${escapeHtml(task.id)}">${completeLabel}</button>
+      ${task.status === 'completed' ? `<button class="inline-button" type="button" data-action="archive-task" data-id="${escapeHtml(task.id)}">Archive</button>` : ''}
+      ${task.status === 'archived' ? `<button class="inline-button" type="button" data-action="unarchive-task" data-id="${escapeHtml(task.id)}">Restore</button>` : ''}
       <button class="inline-button danger-button" type="button" data-action="delete-task" data-id="${escapeHtml(task.id)}">Delete</button>
     </div>
   `;
@@ -822,10 +1010,10 @@ function renderTaskCard(task) {
   const priorityClass = `priority-${task.priority}`;
   const statusClass = `status-${task.status}`;
   const note = truncateNote(task.notes);
-  const done = task.status === 'completed';
+  const done = task.status === 'completed' || task.status === 'archived';
 
   return `
-    <article class="task-card ${done ? 'is-completed' : ''}" data-task-id="${escapeHtml(task.id)}">
+    <article class="task-card ${done ? 'is-completed' : ''} ${areaClass(task.area)}" data-task-id="${escapeHtml(task.id)}">
       <button
         class="task-check ${done ? 'is-done' : ''}"
         type="button"
@@ -842,8 +1030,9 @@ function renderTaskCard(task) {
           <span class="meta-dot ${priorityClass}" aria-hidden="true"></span>
           <span class="meta-text">${escapeHtml(task.priority)}</span>
           <span class="tag ${statusClass}">${escapeHtml(task.status)}</span>
-          <span class="meta-text">${escapeHtml(task.area)}</span>
+          <span class="tag area-chip ${areaClass(task.area)}">${escapeHtml(task.area)}</span>
           <span class="meta-text">Due ${escapeHtml(task.due)}</span>
+          <span class="meta-text">${escapeHtml(task.energy)}</span>
           ${task.requiresOphelia ? '<span class="tag priority-high">Needs review</span>' : ''}
         </div>
       </div>
@@ -853,6 +1042,7 @@ function renderTaskCard(task) {
 }
 
 function renderPackageCard(pkg) {
+  const progress = Math.max(0, Math.min(100, Number(pkg.progress) || 0));
   return `
     <article class="content-card" data-package-id="${escapeHtml(pkg.id)}">
       <div class="content-card-header">
@@ -860,12 +1050,18 @@ function renderPackageCard(pkg) {
         <span class="tag status-active">${escapeHtml(pkg.status)}</span>
       </div>
       <p>${escapeHtml(pkg.caption)}</p>
-      <div class="progress-bar" aria-hidden="true">
-        <div class="progress-fill" style="width: ${Number(pkg.progress) || 0}%"></div>
+      <div class="package-stage-row">
+        ${ringSvg(progress, 64)}
+        <div class="package-stage-copy">
+          <div class="metric-label">Stage progress</div>
+          <strong>${escapeHtml(pkg.stage)}</strong>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" style="width: ${progress}%"></div>
+          </div>
+        </div>
       </div>
       <div class="task-meta">
         <span class="meta-text">Due ${escapeHtml(pkg.due)}</span>
-        <span class="meta-text">${escapeHtml(pkg.stage)}</span>
         <span class="next-action"><span class="next-action-arrow" aria-hidden="true">→</span><span>${escapeHtml(pkg.next)}</span></span>
       </div>
       <div class="card-footer-actions">
@@ -908,11 +1104,16 @@ function renderAppointmentCard(appointment, index) {
 
 function renderPlannerOutput() {
   const planner = getPlannerOutput();
+  const mindset = currentMindset(state);
 
   return `
     <section class="page-section">
       <div class="planner-output">
         <h3>Suggested day plan</h3>
+        <p class="soft-note pressure-free">
+          Consistency over perfect days. Missed items roll forward — no guilt.
+          Today’s check-in: energy ${escapeHtml(mindset.energy)} · mood ${escapeHtml(mindset.mood)} · focus ${escapeHtml(mindset.focus)}.
+        </p>
         <div class="schedule-list">
           ${planner
             .map(
@@ -932,9 +1133,31 @@ function renderPlannerOutput() {
 }
 
 function getPlannerOutput() {
+  const mindset = currentMindset(state);
+  const energy = Number(mindset.energy) || 3;
+  const focus = Number(mindset.focus) || 3;
+  const preferFocused = energy >= 4 || focus >= 4;
+  const preferLight = energy <= 2;
+
+  const energyRank = (taskEnergy) => {
+    const value = String(taskEnergy || 'admin');
+    if (preferFocused) {
+      if (value === 'focused' || value === 'analysis') return 0;
+      if (value === 'creative') return 1;
+      return 2;
+    }
+    if (preferLight) {
+      if (value === 'admin' || value === 'creative') return 0;
+      return 2;
+    }
+    return 1;
+  };
+
   const plannedTasks = [...state.tasks]
     .filter((task) => task.status === 'active')
     .sort((a, b) => {
+      const energyDiff = energyRank(a.energy) - energyRank(b.energy);
+      if (energyDiff !== 0) return energyDiff;
       const order = { high: 0, medium: 1, low: 2 };
       return order[a.priority] - order[b.priority];
     })
@@ -942,10 +1165,10 @@ function getPlannerOutput() {
     .map((task, index) => ({
       time: ['09:00', '10:30', '13:00', '15:00'][index],
       title: task.title,
-      type: task.area
+      type: `${task.area} · ${task.energy}`
     }));
 
-  return [...plannedTasks, { time: '16:00', title: 'Review and set tomorrow', type: 'Admin' }];
+  return [...plannedTasks, { time: '16:00', title: 'Review and set tomorrow (roll forward what slipped)', type: 'Admin' }];
 }
 
 function renderTaskForm(options = {}) {
@@ -1312,18 +1535,181 @@ function renderDashboardPanel(title, bodyHtml, pageId, options = {}) {
   `;
 }
 
+function renderBusinessCheckIn(compact) {
+  const current = currentMindset(state);
+  return `
+    <div class="checkin-panel ${compact ? 'compact' : ''}">
+      <div class="section-header">
+        <h2>${compact ? 'Energy · Mood · Focus' : 'Daily check-in'}</h2>
+      </div>
+      <p class="soft-note">Missed yesterday? Just pick up here — no catch-up pressure.</p>
+      <div class="checkin-grid">
+        ${['energy', 'mood', 'focus']
+          .map(
+            (key) => `
+          <div class="field">
+            <label for="biz-checkin-${key}">${key.charAt(0).toUpperCase() + key.slice(1)}</label>
+            <input id="biz-checkin-${key}" type="range" min="1" max="5" value="${current[key]}" data-biz-mindset="${key}" />
+            <div class="range-value" data-biz-range-for="${key}">${current[key]} / 5</div>
+          </div>`
+          )
+          .join('')}
+      </div>
+      <button class="primary-button" type="button" id="save-biz-checkin">Save check-in</button>
+    </div>
+  `;
+}
+
+function renderOpsRitualsToday() {
+  const today = todayDayIndex();
+  const rituals = asArray(state.opsRituals);
+  if (!rituals.length) return '';
+  return `
+    <div class="panel-card ops-rituals-card">
+      <div class="section-header"><h2>Ops rituals</h2></div>
+      <p class="soft-note">Light recurring cadence — secondary to delivery and revenue.</p>
+      <div class="habit-list">
+        ${rituals
+          .map((ritual) => {
+            const done = Boolean(state.ritualCompletions[ritual.id]?.[today]);
+            return `
+              <label class="habit-row ${areaClass(ritual.area)}">
+                <input type="checkbox" data-ritual-toggle="${escapeHtml(ritual.id)}" data-day="${today}" ${done ? 'checked' : ''} />
+                <span class="habit-swatch" aria-hidden="true"></span>
+                <span class="habit-title">${escapeHtml(ritual.title)}</span>
+                <span class="habit-streak">${escapeHtml(ritual.area)}</span>
+              </label>`;
+          })
+          .join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderWeeklyOpsGrid() {
+  const today = todayDayIndex();
+  return `
+    <div class="weekly-scroll">
+      <div class="weekly-grid ops-weekly-grid">
+        <div class="weekly-corner"></div>
+        ${DAY_LABELS_SHORT.map(
+          (label, index) => `
+          <div class="weekly-day-head ${index === today ? 'is-today' : ''}">
+            <div class="day-name">${label}</div>
+            ${ringSvg(
+              dayCompletion(state.tasks, state.opsRituals, state.ritualCompletions, index),
+              54
+            )}
+          </div>`
+        ).join('')}
+        <div class="weekly-habit-label">Must-dos</div>
+        ${DAY_LABELS_SHORT.map((_, dayIndex) => {
+          const dayTasks = tasksForDay(state.tasks, dayIndex).filter(
+            (task) => task.due === 'Today' || task.priority === 'high' || dueToDayIndexes(task.due).includes(dayIndex)
+          );
+          const unique = [];
+          const seen = new Set();
+          dayTasks.forEach((task) => {
+            if (seen.has(task.id)) return;
+            seen.add(task.id);
+            unique.push(task);
+          });
+          return `
+            <div class="weekly-cell ops-day-cell ${dayIndex === today ? 'is-today' : ''}">
+              ${unique.length
+                ? unique
+                    .slice(0, 3)
+                    .map(
+                      (task) => `
+                <button class="ops-day-chip ${task.status === 'completed' ? 'is-done' : ''} ${areaClass(task.area)}" type="button" data-action="edit-task" data-id="${escapeHtml(task.id)}">
+                  ${escapeHtml(task.title)}
+                </button>`
+                    )
+                    .join('')
+                : '<span class="ops-day-empty">—</span>'}
+            </div>`;
+        }).join('')}
+        ${asArray(state.opsRituals)
+          .map(
+            (ritual) => `
+          <div class="weekly-habit-label ${areaClass(ritual.area)}">
+            <span class="habit-swatch"></span>
+            ${escapeHtml(ritual.title)}
+          </div>
+          ${DAY_LABELS_SHORT.map((_, dayIndex) => {
+            const done = Boolean(state.ritualCompletions[ritual.id]?.[dayIndex]);
+            return `
+              <label class="weekly-cell">
+                <input type="checkbox" data-ritual-toggle="${escapeHtml(ritual.id)}" data-day="${dayIndex}" ${done ? 'checked' : ''} />
+              </label>`;
+          }).join('')}`
+          )
+          .join('')}
+        <div class="weekly-habit-label">Appointments</div>
+        ${DAY_LABELS_SHORT.map((_, dayIndex) => {
+          if (dayIndex !== today) {
+            return '<div class="weekly-cell ops-day-cell"><span class="ops-day-empty">—</span></div>';
+          }
+          return `
+            <div class="weekly-cell ops-day-cell is-today">
+              ${asArray(state.appointments)
+                .map((appt) => `<div class="ops-day-chip">${escapeHtml(appt.time)} ${escapeHtml(appt.title)}</div>`)
+                .join('') || '<span class="ops-day-empty">—</span>'}
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderWeeklyReviewPanel() {
+  const review = state.weeklyReview || defaultWeeklyReview();
+  return `
+    <div class="panel-card weekly-review-card">
+      <div class="section-header"><h2>Weekly review</h2></div>
+      <p class="soft-note">What shipped, what blocked, what needs Ophelia next week.</p>
+      <form id="weekly-review-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="review-week-of">Week of</label>
+            <input id="review-week-of" name="weekOf" type="text" placeholder="e.g. 22 Sep" value="${escapeHtml(review.weekOf || '')}" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="review-shipped">What shipped</label>
+          <textarea id="review-shipped" name="shipped" rows="2">${escapeHtml(review.shipped || '')}</textarea>
+        </div>
+        <div class="field">
+          <label for="review-blocked">What blocked</label>
+          <textarea id="review-blocked" name="blocked" rows="2">${escapeHtml(review.blocked || '')}</textarea>
+        </div>
+        <div class="field">
+          <label for="review-ophelia">Needs Ophelia next week</label>
+          <textarea id="review-ophelia" name="needsOphelia" rows="2">${escapeHtml(review.needsOphelia || '')}</textarea>
+        </div>
+        <div class="field">
+          <label for="review-notes">Notes</label>
+          <textarea id="review-notes" name="notes" rows="2">${escapeHtml(review.notes || '')}</textarea>
+        </div>
+        <button class="primary-button" type="submit">Save weekly review</button>
+      </form>
+    </div>
+  `;
+}
+
 function renderTodayPage() {
+  const completion = todayCompletion(state.tasks);
   const mustDo = state.tasks
     .filter((task) => task.status === 'active' && (task.due === 'Today' || task.priority === 'high'))
     .slice(0, 5);
   const needsOphelia = state.tasks
-    .filter((task) => task.requiresOphelia && task.status !== 'completed' && task.status !== 'blocked')
+    .filter((task) => task.requiresOphelia && task.status !== 'completed' && task.status !== 'blocked' && task.status !== 'archived')
     .slice(0, 4);
   const blockedTasks = state.tasks
     .filter((task) => task.status === 'blocked' || task.status === 'waiting')
     .slice(0, 4);
   const revenueTasks = state.tasks
-    .filter((task) => (task.area === 'Revenue / leads' || task.area === 'Operations') && task.status !== 'completed')
+    .filter((task) => (task.area === 'Revenue / leads' || task.area === 'Operations') && task.status !== 'completed' && task.status !== 'archived')
     .slice(0, 4);
   const packages = state.contentPackages.slice(0, 3);
   const audits = state.audits.slice(0, 3);
@@ -1331,6 +1717,10 @@ function renderTodayPage() {
   const completed = state.tasks
     .filter((task) => task.status === 'completed')
     .slice(0, 5);
+
+  const dayPercents = DAY_LABELS_SHORT.map((_, index) =>
+    dayCompletion(state.tasks, state.opsRituals, state.ritualCompletions, index)
+  );
 
   const panels = {
     'must-do': () =>
@@ -1370,7 +1760,7 @@ function renderTodayPage() {
         'Completed',
         completed.length
           ? `${renderCompactTaskList(completed, '')}
-             <p class="dash-hint">Tick again to reopen. Full list: Tasks → status “completed”.</p>`
+             <p class="dash-hint">Tick again to reopen. Archive from Tasks when done celebrating.</p>`
           : `<div class="dash-empty">Nothing completed yet. Ticked tasks will land here.</div>`,
         'tasks',
         { filterStatus: 'completed' }
@@ -1386,14 +1776,45 @@ function renderTodayPage() {
       <div class="dashboard-intro">
         <div class="dashboard-intro-copy">
           <p class="dashboard-kicker">${escapeHtml(getDayLabel())}</p>
-          <p class="dashboard-lede">One-screen overview — priorities, reviews, content, SEO, and waiting items. Ticked tasks move to Completed (still in Tasks).</p>
+          <p class="dashboard-lede">One-screen overview — priorities, reviews, content, SEO, and waiting items. Consistency over perfect days.</p>
         </div>
         ${illustration('today', 'section')}
       </div>
 
       ${renderLiturgyStrip()}
 
+      <div class="ring-summary business-rings">
+        <div class="panel-card ring-card">
+          <div class="ring-card-copy">
+            <div class="metric-label">Today</div>
+            <h3>Must-do completion</h3>
+            <p>${completion.done} of ${completion.total} must-dos done</p>
+          </div>
+          ${ringSvg(completion.percent, 88)}
+        </div>
+        <div class="panel-card ring-card">
+          <div class="ring-card-copy">
+            <div class="metric-label">This week</div>
+            <h3>Day rings</h3>
+            <div class="mini-day-rings">
+              ${DAY_LABELS_SHORT.map(
+                (label, index) => `
+                <div class="mini-day ${index === todayDayIndex() ? 'is-today' : ''}">
+                  <span>${label}</span>
+                  ${ringSvg(dayPercents[index], 42)}
+                </div>`
+              ).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
       ${renderMetrics()}
+
+      <div class="dashboard-side-row">
+        <div class="panel-card">${renderBusinessCheckIn(true)}</div>
+        ${renderOpsRitualsToday()}
+      </div>
 
       <div class="dashboard-board">
         ${boardHtml}
@@ -1430,7 +1851,11 @@ function renderTasksPage() {
 function renderPlannerPage() {
   return `
     <section class="page-section">
-      ${sectionTitle('Daily planner', 'planner')}
+      ${sectionTitle('Weekly ops grid', 'planner')}
+      <p class="soft-note pressure-free">Scan the week at a glance. Tick rituals when done — unfinished must-dos simply roll forward.</p>
+      ${renderWeeklyOpsGrid()}
+    </section>
+    <section class="page-section">
       <div class="planner-output">
         <div class="scheduler">
           <div class="task-meta">
@@ -1443,6 +1868,9 @@ function renderPlannerPage() {
       </div>
     </section>
     ${renderPlannerOutput()}
+    <section class="page-section">
+      ${renderWeeklyReviewPanel()}
+    </section>
   `;
 }
 
@@ -1458,23 +1886,36 @@ function renderSeoPage() {
 }
 
 function renderClientsPage() {
+  const clients = asArray(state.clients);
   return `
     <section class="page-section">
       ${sectionTitle('Clients', 'empty')}
-      <div class="panel-card">
-        ${
-          window.TTC_ILLUSTRATIONS
-            ? window.TTC_ILLUSTRATIONS.emptyState(
-                'Client snapshot view will be added here. This is intentionally minimal to keep the dashboard light and calm.'
+      <p class="soft-note">Status, next action, and what’s blocking progress.</p>
+      <div class="card-grid client-grid">
+        ${clients.length
+          ? clients
+              .map(
+                (client) => `
+          <article class="panel-card client-card status-${escapeHtml(client.status || 'active')}">
+            <div class="section-header">
+              <h3>${escapeHtml(client.name)}</h3>
+              <span class="tag status-${escapeHtml(client.status || 'active')}">${escapeHtml(client.status || 'active')}</span>
+            </div>
+            <p class="next-action"><span class="next-action-arrow" aria-hidden="true">→</span><span>${escapeHtml(client.nextAction || 'No next action')}</span></p>
+            ${client.blockedBy ? `<p class="task-blocker"><strong>Blocked by:</strong> ${escapeHtml(client.blockedBy)}</p>` : '<p class="soft-note">No blocker.</p>'}
+            ${client.notes ? `<p class="task-note-preview">${escapeHtml(client.notes)}</p>` : ''}
+          </article>`
               )
-            : `<div class="empty-state"><div>Client snapshot view will be added here.</div></div>`
-        }
+              .join('')
+          : `<div class="panel-card"><div class="empty-state">No clients yet.</div></div>`}
       </div>
     </section>
   `;
 }
 
 function renderRevenuePage() {
+  const leads = asArray(state.revenueLeads);
+  const stages = REVENUE_STAGES;
   const revenueTasks = getFilteredTasks(
     state.tasks.filter((task) => task.area === 'Revenue / leads' || task.area === 'Operations')
   );
@@ -1482,6 +1923,41 @@ function renderRevenuePage() {
   return `
     <section class="page-section">
       ${sectionTitle('Revenue / Leads', 'revenue')}
+      <p class="soft-note">Pipeline board: discovery → proposal → follow-up → won / lost.</p>
+      <div class="revenue-board">
+        ${stages
+          .map((stage) => {
+            const column = leads.filter((lead) => lead.stage === stage);
+            return `
+              <div class="revenue-column">
+                <div class="revenue-column-head">
+                  <h3>${escapeHtml(stage)}</h3>
+                  <span class="meta-text">${column.length}</span>
+                </div>
+                <div class="revenue-column-body">
+                  ${column.length
+                    ? column
+                        .map(
+                          (lead) => `
+                    <article class="revenue-card">
+                      <h4>${escapeHtml(lead.name)}</h4>
+                      <div class="task-meta">
+                        <span class="tag">${escapeHtml(lead.value || '')}</span>
+                        ${lead.nextFollowUp ? `<span class="meta-text">Follow-up ${escapeHtml(lead.nextFollowUp)}</span>` : ''}
+                      </div>
+                      ${lead.notes ? `<p class="task-note-preview">${escapeHtml(lead.notes)}</p>` : ''}
+                    </article>`
+                        )
+                        .join('')
+                    : '<div class="dash-empty">Empty</div>'}
+                </div>
+              </div>`;
+          })
+          .join('')}
+      </div>
+    </section>
+    <section class="page-section">
+      <div class="section-header"><h2>Related tasks</h2></div>
       ${renderTaskToolbar()}
       <div class="panel-card">
         ${renderTaskList(revenueTasks, 'No revenue or operations tasks match this filter.')}
@@ -1921,6 +2397,10 @@ function renderTaskModal() {
               <input id="edit-duration" name="duration" type="number" min="5" step="5" value="${escapeHtml(String(task.duration))}" />
             </div>
             <div class="field">
+              <label for="edit-energy">Energy</label>
+              <select id="edit-energy" name="energy">${optionList(TASK_ENERGY, task.energy || 'admin')}</select>
+            </div>
+            <div class="field">
               <label for="edit-owner">Owner</label>
               <input id="edit-owner" name="owner" type="text" value="${escapeHtml(task.owner)}" />
             </div>
@@ -2004,7 +2484,10 @@ function upsertTaskFromForm(formData, existing) {
       notes: (formData.get('notes') || '').toString().trim(),
       requiresOphelia: formData.get('requiresOphelia') === 'on' || formData.get('requiresOphelia') === true,
       duration: formData.get('duration') || existing?.duration || 30,
-      energy: existing?.energy || 'admin',
+      energy: (() => {
+        const value = String(formData.get('energy') || existing?.energy || 'admin').trim();
+        return TASK_ENERGY.includes(value) ? value : existing?.energy || 'admin';
+      })(),
       createdAt: existing?.createdAt || stamp,
       updatedAt: stamp,
       blocked: status === 'blocked'
@@ -2060,6 +2543,60 @@ function bindPageEvents() {
       composeOutsideBound = true;
     }
   }
+
+  document.querySelectorAll('input[data-biz-mindset]').forEach((input) => {
+    input.addEventListener('input', () => {
+      const key = input.dataset.bizMindset;
+      const label = document.querySelector(`[data-biz-range-for="${key}"]`);
+      if (label) label.textContent = `${input.value} / 5`;
+    });
+  });
+
+  const saveCheckin = document.getElementById('save-biz-checkin');
+  if (saveCheckin) {
+    saveCheckin.addEventListener('click', () => {
+      if (!Array.isArray(state.mindsetByDay)) {
+        state.mindsetByDay = defaultMindsetByDay();
+      }
+      state.mindsetByDay[todayDayIndex()] = {
+        energy: Number(document.getElementById('biz-checkin-energy')?.value) || 3,
+        mood: Number(document.getElementById('biz-checkin-mood')?.value) || 3,
+        focus: Number(document.getElementById('biz-checkin-focus')?.value) || 3
+      };
+      saveState();
+      render();
+    });
+  }
+
+  document.querySelectorAll('[data-ritual-toggle]').forEach((input) => {
+    input.addEventListener('change', () => {
+      const ritualId = input.dataset.ritualToggle;
+      const day = Number(input.dataset.day);
+      if (!state.ritualCompletions[ritualId]) {
+        state.ritualCompletions[ritualId] = [false, false, false, false, false, false, false];
+      }
+      state.ritualCompletions[ritualId][day] = input.checked;
+      saveState();
+      render();
+    });
+  });
+
+  const reviewForm = document.getElementById('weekly-review-form');
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(reviewForm);
+      state.weeklyReview = {
+        weekOf: String(data.get('weekOf') || '').trim(),
+        shipped: String(data.get('shipped') || '').trim(),
+        blocked: String(data.get('blocked') || '').trim(),
+        needsOphelia: String(data.get('needsOphelia') || '').trim(),
+        notes: String(data.get('notes') || '').trim()
+      };
+      saveState();
+      render();
+    });
+  }
 }
 
 function handleEditTaskForm(event) {
@@ -2099,6 +2636,7 @@ function handleEditTaskForm(event) {
 function toggleTaskComplete(taskId) {
   const task = findTask(taskId);
   if (!task) return;
+  if (task.status === 'archived') return;
 
   const completing = task.status !== 'completed';
   if (completing) {
@@ -2120,6 +2658,27 @@ function toggleTaskComplete(taskId) {
       triggerArt('happy', { anchor: row || undefined, duration: 1200 });
     });
   }
+}
+
+function archiveTask(taskId) {
+  const task = findTask(taskId);
+  if (!task) return;
+  task.status = 'archived';
+  task.blocked = false;
+  task.updatedAt = nowIso();
+  saveState();
+  closeTaskModal({ restoreFocus: false });
+  render();
+}
+
+function unarchiveTask(taskId) {
+  const task = findTask(taskId);
+  if (!task) return;
+  task.status = 'active';
+  task.blocked = false;
+  task.updatedAt = nowIso();
+  saveState();
+  render();
 }
 
 function requestDeleteTask(taskId, triggerEl) {
@@ -2235,6 +2794,12 @@ function onDocumentClick(event) {
       break;
     case 'toggle-complete':
       toggleTaskComplete(id);
+      break;
+    case 'archive-task':
+      archiveTask(id);
+      break;
+    case 'unarchive-task':
+      unarchiveTask(id);
       break;
     case 'delete-task':
       requestDeleteTask(id, target);
