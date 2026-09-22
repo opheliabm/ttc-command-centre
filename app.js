@@ -175,17 +175,20 @@ function renderWorkspaceSwitch() {
       Personal
     </button>
   `;
-
-  workspaceSwitchEl.querySelectorAll('.workspace-btn').forEach((button) => {
-    button.addEventListener('click', () => {
-      const next = button.dataset.workspace;
-      if (next === state.workspace) return;
-      state.workspace = next;
-      saveState();
-      render();
-    });
-  });
 }
+
+function switchWorkspace(next) {
+  if (!next || next === state.workspace) return;
+  state.workspace = next;
+  saveState();
+  render();
+}
+
+workspaceSwitchEl.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-workspace]');
+  if (!button) return;
+  switchWorkspace(button.dataset.workspace);
+});
 
 function renderNav() {
   const currentPage = getWorkspace().currentPage;
