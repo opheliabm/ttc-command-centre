@@ -32,27 +32,27 @@ This project is a demo workspace for tracking work, content packages and SEO tas
 
 ## Included features
 
-- Today dashboard
-- Content package cards
-- SEO + website audit section
-- Quick links to your main tools
-- Planner view for daily suggestions
-- Local browser storage for task persistence
-- Simple task creation form
+- **Business | Personal** workspace switcher (separate dashboards)
+- Business: Today dashboard, content packages, SEO, planner, ops queues
+- Personal: habits, weekly grid, completion rings, Energy/Mood/Focus check-in
+- Quick links per workspace
+- Local browser storage for persistence (workspaces stored separately)
+- Simple task / habit creation forms
 
 ## Best use cases
 
-- Daily operations dashboard
+- Daily **business** operations dashboard
+- Separate **personal** habit + mindset tracker
 - Content package tracker
 - SEO and AI-searchability workspace
 - Quick link hub to publishing and workflow tools
-- Decision support for “what should I do next?”
+- Decision support for “what should I do next?” (business) vs “what keeps me consistent?” (personal)
 
 ## Notes
 
 - Keep client or business data private and do not put private links or API keys in a public repo.
 - This is a safe demo build and intentionally uses placeholder examples.
-- This repo is the **Phase 1 prototype**. See [ROADMAP.md](ROADMAP.md) for Phase 2+ (Quiet Progress–inspired weekly rings, mindset check-in, ops rituals) and Phase 3 ops completeness.
+- This repo is the **Phase 1 business prototype** plus a **separate Personal tracker** workspace. See [ROADMAP.md](ROADMAP.md).
 
 ## Quick start
 

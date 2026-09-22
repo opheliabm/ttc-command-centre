@@ -6,7 +6,7 @@
     <title>TTC Command Centre</title>
     <meta
       name="description"
-      content="TTC Command Centre — a calm operations dashboard for content, SEO, publishing, and daily priorities."
+      content="TTC Command Centre — separate Business ops and Personal tracker workspaces."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,21 +16,23 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-workspace="business">
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand-wrap">
           <div class="brand-mark">TTC</div>
           <div>
             <div class="brand-name">Command Centre</div>
-            <div class="brand-subtitle">Demo workspace</div>
+            <div class="brand-subtitle" id="brand-subtitle">Business ops</div>
           </div>
         </div>
+
+        <div class="workspace-switch" id="workspace-switch" role="tablist" aria-label="Workspace"></div>
 
         <nav id="nav" aria-label="Main navigation"></nav>
 
         <div class="sidebar-section">
-          <div class="section-label">Quick links</div>
+          <div class="section-label" id="quick-links-label">Quick links</div>
           <div id="quick-links"></div>
         </div>
       </aside>
@@ -38,13 +40,10 @@
       <main class="main-panel">
         <header class="topbar">
           <div>
-            <div class="eyebrow">Daily operations</div>
+            <div class="eyebrow" id="page-eyebrow">Daily operations</div>
             <h1 id="page-title">Today</h1>
           </div>
-          <div class="topbar-actions">
-            <button class="secondary-button" id="plan-day">Plan my day</button>
-            <button class="primary-button" id="add-appointment">Add appointment</button>
-          </div>
+          <div class="topbar-actions" id="topbar-actions"></div>
         </header>
 
         <div id="page-content"></div>
