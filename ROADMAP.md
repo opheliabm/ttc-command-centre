@@ -2,55 +2,33 @@
 
 ## Product stance
 
-Two separate workspaces in one shell:
+Two separate workspaces in one editorial shell:
 
-- **Business** — ops command centre (content, SEO, clients, revenue, approvals)
+- **Business** — ops command centre (editorial UI, Daily Gospel, Customise, task CRUD)
 - **Personal** — Quiet Progress–style tracker (habits, weekly grid, rings, mindset)
 
-They share chrome (sidebar switcher) but keep **separate nav, data, and localStorage trees**. No mixing business delivery work with personal habits.
+They share chrome (sidebar switcher, theme) but keep **separate nav, data, and persistence fields**.
 
-## Phase 1 — Business prototype (shipped)
+## Current stack
 
-Business workspace already includes:
+- Visual system from `feature/editorial-ui-design-liturgy` (see [DESIGN.md](DESIGN.md))
+- Dual Business | Personal switcher
+- Personal module: [personal.js](personal.js)
+- Liturgy + illustrations for Business Dashboard
 
-- Today dashboard with metrics, priority tasks, Needs Ophelia, waiting/blocked
-- Content package cards with stage + progress
-- Tasks list + add-task form
-- Planner with fixed appointments + “Plan my day”
-- Website & SEO audit cards
-- Quick links hub
-- Nav stubs for Clients / Revenue / Leads
-- Persistence via `localStorage`
-
-## Phase 1b — Dual workspace + Personal tracker (current)
-
-- Business | Personal switcher in the sidebar
-- Personal nav: Today, Habits, Weekly grid, One-off tasks, Mindset
-- Habit checkboxes with color categories + streaks
-- Overall + per-day completion rings
-- Sun–Sat weekly grid
-- Energy / Mood / Focus check-in with weekly bars
-- Pressure-free copy (“miss a day, pick up where you are”)
-- Separate personal links + demo seed data
-- Migrates older `ttc-command-centre-demo-v1` business data into the new storage shape
-
-## Phase 2 — Deepen each workspace
+## Next
 
 **Business**
-1. Task complete toggle (unblocks honest completion rings on ops Today)
-2. Today completion ring for must-dos
-3. Optional EMF-aware Plan my day for ops energy
-4. Clients + Revenue stubs filled
-5. Ops rituals (publish cadence, GBP, SEO spot-check)
+1. Optional EMF-aware Plan my day
+2. Clients + Revenue stubs filled
+3. Ops rituals (publish cadence, GBP, SEO spot-check)
 
 **Personal**
-1. Month view / longer streak history
-2. Habit edit / archive
-3. Optional export (CSV) if you want a Sheets-like backup
-4. Personal calendar sync (later)
+1. Habit edit / archive
+2. Month view / longer streak history
+3. Optional CSV export
 
-## Explicitly out of scope for core
+## Explicitly out of scope
 
 - Merging personal habits into Business Today
 - Replacing Business with a habit-only product
-- Gym / savings / income trackers as first-class business pages
