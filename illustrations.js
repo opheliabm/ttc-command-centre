@@ -1,7 +1,7 @@
 /**
- * Original local SVG illustrations for TTC Command Centre.
- * Minimal editorial / newsletter style — coral annotations on monochrome paper.
- * No external assets. Decorative by default (aria-hidden).
+ * Cute, distinct local SVG doodles for TTC Command Centre.
+ * Each scene has its own character — not the same face recycled.
+ * Editorial outlines + limited colour. Decorative (aria-hidden).
  */
 (function () {
   const INK = '#080808';
@@ -13,6 +13,9 @@
   const BLUE = '#8fb8ff';
   const LAVENDER = '#c9a8e8';
   const CORAL_SOFT = 'var(--coral-soft, #f0d5da)';
+  const PEACH = '#ffd0b5';
+  const MINT = '#b8e0d2';
+  const CREAM = '#fff6da';
   const SOFT_LINE = '#d8d8d4';
   const OUTLINE = INK;
   const VB = '0 0 200 160';
@@ -25,482 +28,528 @@
     `;
   }
 
+  /* Shared tiny helpers for cute eyes */
+  function eyes(cx, cy, gap, r) {
+    const g = gap || 10;
+    const er = r || 2.4;
+    return `
+      <circle class="illustration-blink" cx="${cx - g / 2}" cy="${cy}" r="${er}" fill="${OUTLINE}"/>
+      <circle class="illustration-blink" cx="${cx + g / 2}" cy="${cy}" r="${er}" fill="${OUTLINE}"/>
+      <circle cx="${cx - g / 2 + 0.7}" cy="${cy - 0.8}" r="${er * 0.35}" fill="${PAPER}"/>
+      <circle cx="${cx + g / 2 + 0.7}" cy="${cy - 0.8}" r="${er * 0.35}" fill="${PAPER}"/>
+    `;
+  }
+
   const scenes = {
+    /* —— MASCOT: sidebar-only bean buddy (never reused as page art) —— */
+    mascot: () =>
+      wrap(
+        `
+      <ellipse class="ill-blob illustration-breathe" cx="160" cy="128" rx="24" ry="10" fill="${CREAM}"/>
+      <g class="illustration-breathe illustration-sway">
+        <!-- bean body -->
+        <ellipse cx="100" cy="96" rx="40" ry="46" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <!-- belly -->
+        <ellipse cx="100" cy="108" rx="22" ry="18" fill="${PAPER}" opacity="0.55"/>
+        ${eyes(100, 88, 18, 3)}
+        <path d="M90 102 Q100 112 110 102" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <ellipse cx="82" cy="96" rx="5" ry="3" fill="${CORAL}" opacity="0.4"/>
+        <ellipse cx="118" cy="96" rx="5" ry="3" fill="${CORAL}" opacity="0.4"/>
+        <!-- arms -->
+        <path class="illustration-wave-arm" d="M64 96 Q48 84 42 70" fill="none" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M136 96 Q152 88 160 76" fill="none" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- tiny feet -->
+        <ellipse cx="84" cy="140" rx="10" ry="6" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <ellipse cx="116" cy="140" rx="10" ry="6" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <!-- heart balloon -->
+        <g class="illustration-bounce">
+          <path d="M148 48 C148 40, 158 36, 162 44 C166 36, 176 40, 176 48 C176 60, 162 70, 162 70 C162 70, 148 60, 148 48Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.8"/>
+          <path d="M162 70 V88" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+      </g>
+    `,
+        'illustration-scene--mascot'
+      ),
+
+    /* —— BUSINESS: coffee mug buddy at a desk —— */
     today: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="42" cy="118" rx="38" ry="22" fill="${YELLOW}"/>
-      <ellipse class="ill-blob" cx="168" cy="36" rx="28" ry="20" fill="${BLUE}"/>
-      <path class="ill-blob" d="M148 108 C168 98, 186 118, 172 136 C156 152, 128 140, 132 120 C134 110, 140 112, 148 108Z" fill="${CORAL_SOFT}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="168" cy="128" rx="28" ry="12" fill="${YELLOW}" opacity="0.7"/>
+      <path class="ill-blob" d="M12 40 C28 18, 58 28, 52 52 C46 70, 8 62, 12 40Z" fill="${MINT}" opacity="0.8"/>
 
-      <!-- desk cards -->
-      <g class="illustration-float" style="--ill-delay:0s">
-        <rect x="108" y="78" width="36" height="28" rx="6" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M116 88 H132 M116 95 H128" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="136" cy="88" r="3.2" fill="${CORAL}"/>
+      <!-- sticky stack -->
+      <g class="illustration-float" style="--ill-delay:0.15s">
+        <rect x="118" y="42" width="40" height="34" rx="4" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="2" transform="rotate(6 138 59)"/>
+        <path d="M126 54 H146 M126 62 H140" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
       </g>
-      <g class="illustration-float" style="--ill-delay:0.4s">
-        <rect x="128" y="58" width="34" height="26" rx="6" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2.2" transform="rotate(8 145 71)"/>
-        <path d="M136 68 H150 M136 75 H146" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
-      </g>
-      <g class="illustration-float" style="--ill-delay:0.8s">
-        <rect x="96" y="98" width="32" height="24" rx="6" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2.2" transform="rotate(-6 112 110)"/>
-        <path d="M104 108 H118" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
+      <g class="illustration-float" style="--ill-delay:0.55s">
+        <rect x="138" y="72" width="36" height="30" rx="4" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2" transform="rotate(-8 156 87)"/>
+        <path d="M146 84 H162" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
       </g>
 
-      <!-- calendar -->
-      <g>
-        <rect x="28" y="52" width="44" height="46" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
-        <rect x="28" y="52" width="44" height="12" rx="8" fill="${CORAL}"/>
-        <path d="M40 48 V56 M60 48 V56" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="40" cy="78" r="3" fill="${YELLOW}"/>
-        <circle cx="52" cy="78" r="3" fill="${TEAL}"/>
-        <circle cx="64" cy="78" r="3" fill="${BLUE}"/>
-        <rect x="38" y="86" width="8" height="6" rx="1.5" fill="${CORAL}"/>
-      </g>
+      <!-- desk -->
+      <path d="M24 118 H176" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
 
-      <!-- character -->
+      <!-- cute coffee mug (big face) -->
       <g class="illustration-breathe illustration-sway">
-        <ellipse cx="86" cy="128" rx="22" ry="8" fill="${WARM}" opacity="0.7"/>
-        <path d="M74 98 C74 82, 98 80, 100 96 C102 110, 78 114, 74 98Z" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle cx="88" cy="72" r="17" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle cx="78" cy="76" r="3.2" fill="${CORAL}" opacity="0.35"/>
-        <circle cx="98" cy="76" r="3.2" fill="${CORAL}" opacity="0.35"/>
-        <circle class="illustration-blink" cx="82" cy="70" r="2.3" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="94" cy="70" r="2.3" fill="${OUTLINE}"/>
-        <path d="M83 79 Q88 85 94 79" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M72 64 Q78 57 84 62" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-        <path d="M96 62 Q102 57 106 64" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-        <path class="illustration-wave-arm" d="M68 104 Q56 94 48 84" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M102 102 Q118 94 128 82" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M62 70 H118 C122 70, 124 74, 124 78 V112 C124 118, 118 122, 112 122 H68 C62 122, 58 118, 58 112 V78 C58 74, 60 70, 62 70Z" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <path d="M124 84 H136 C142 84, 146 90, 146 96 C146 102, 142 108, 136 108 H124" fill="none" stroke="${OUTLINE}" stroke-width="2.3" stroke-linecap="round"/>
+        ${eyes(90, 92, 16, 2.8)}
+        <path d="M84 102 Q90 108 96 102" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="78" cy="96" rx="3.5" ry="2.2" fill="${CORAL}" opacity="0.35"/>
+        <ellipse cx="102" cy="96" rx="3.5" ry="2.2" fill="${CORAL}" opacity="0.35"/>
+        <!-- steam -->
+        <path class="illustration-float" d="M78 58 Q74 48 80 42" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="illustration-float" style="--ill-delay:0.4s" d="M92 56 Q96 46 90 40" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="illustration-float" style="--ill-delay:0.8s" d="M104 58 Q108 50 102 44" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
       </g>
 
       <g class="illustration-sparkle">
-        <path d="M156 58 L158 64 L164 66 L158 68 L156 74 L154 68 L148 66 L154 64 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.2"/>
-        <circle cx="172" cy="72" r="2.2" fill="${TEAL}"/>
-        <circle cx="148" cy="48" r="1.8" fill="${CORAL}"/>
+        <circle cx="48" cy="78" r="3" fill="${TEAL}"/>
+        <circle cx="160" cy="48" r="2.5" fill="${CORAL}"/>
       </g>
-      <path class="illustration-draw" d="M18 40 C28 28, 44 34, 48 24" fill="none" stroke="${CORAL}" stroke-width="2" stroke-linecap="round"/>
     `,
         'illustration-scene--today'
       ),
 
+    /* —— CONTENT: little camera toad —— */
     content: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="36" cy="40" rx="30" ry="24" fill="${LAVENDER}"/>
-      <ellipse class="ill-blob" cx="170" cy="120" rx="34" ry="22" fill="${YELLOW}"/>
+      <ellipse class="ill-blob" cx="36" cy="120" rx="30" ry="14" fill="${LAVENDER}" opacity="0.75"/>
+      <ellipse class="ill-blob illustration-breathe" cx="170" cy="36" rx="22" ry="16" fill="${YELLOW}"/>
 
-      <!-- media card -->
+      <!-- film strip -->
       <g class="illustration-float">
-        <rect x="108" y="48" width="64" height="52" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
-        <rect x="116" y="56" width="48" height="28" rx="6" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.6"/>
-        <path d="M134 64 L146 70 L134 76 Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.4" stroke-linejoin="round"/>
-        <path d="M118 92 H152" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="24" y="44" width="28" height="72" rx="4" fill="${INK}" stroke="${OUTLINE}" stroke-width="1.5"/>
+        <rect x="28" y="50" width="20" height="12" rx="2" fill="${YELLOW}"/>
+        <rect x="28" y="68" width="20" height="12" rx="2" fill="${TEAL}"/>
+        <rect x="28" y="86" width="20" height="12" rx="2" fill="${BLUE}"/>
       </g>
 
-      <!-- document -->
-      <g class="illustration-float" style="--ill-delay:0.5s">
-        <path d="M28 58 H58 L68 68 V118 H28 Z" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2" stroke-linejoin="round"/>
-        <path d="M58 58 V68 H68" fill="none" stroke="${OUTLINE}" stroke-width="2"/>
-        <path d="M36 80 H56 M36 88 H52 M36 96 H58" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
-      </g>
-
-      <!-- mic -->
-      <g>
-        <rect x="82" y="70" width="18" height="28" rx="9" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <path d="M78 88 Q78 102 91 102 Q104 102 104 88" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-        <path d="M91 102 V114 M84 114 H98" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-      </g>
-
-      <!-- character head peek -->
+      <!-- camera body with face -->
       <g class="illustration-breathe illustration-sway">
-        <circle cx="58" cy="128" r="18" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle cx="49" cy="132" r="2.8" fill="${CORAL}" opacity="0.35"/>
-        <circle cx="67" cy="132" r="2.8" fill="${CORAL}" opacity="0.35"/>
-        <circle class="illustration-blink" cx="52" cy="126" r="2.2" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="64" cy="126" r="2.2" fill="${OUTLINE}"/>
-        <path d="M53 135 Q58 140 64 135" fill="none" stroke="${OUTLINE}" stroke-width="1.7" stroke-linecap="round"/>
-        <path d="M44 118 Q50 111 56 116" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <rect x="70" y="58" width="90" height="62" rx="16" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <rect x="78" y="48" width="28" height="14" rx="5" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
+        <!-- lens = big eye -->
+        <circle cx="128" cy="88" r="22" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <circle cx="128" cy="88" r="14" fill="${INK}"/>
+        <circle class="illustration-blink" cx="128" cy="88" r="7" fill="${TEAL}"/>
+        <circle cx="133" cy="82" r="3.5" fill="${PAPER}"/>
+        <!-- little smile eye -->
+        <circle class="illustration-blink" cx="92" cy="84" r="4" fill="${OUTLINE}"/>
+        <circle cx="93.5" cy="82.5" r="1.4" fill="${PAPER}"/>
+        <path d="M86 98 Q92 104 98 98" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <!-- blush -->
+        <ellipse cx="86" cy="92" rx="4" ry="2.5" fill="${CORAL}" opacity="0.4"/>
       </g>
 
-      <g class="illustration-sparkle" style="--ill-delay:0.3s">
-        <circle cx="150" cy="36" r="4" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.3"/>
-        <circle cx="164" cy="48" r="2.5" fill="${BLUE}"/>
+      <g class="illustration-bounce">
+        <circle cx="168" cy="96" r="8" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.8"/>
+        <path d="M168 88 V80" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
       </g>
     `,
         'illustration-scene--content'
       ),
 
+    /* —— PLANNER: calendar kitten —— */
     planner: () =>
       wrap(
         `
-      <ellipse class="ill-blob" cx="160" cy="42" rx="32" ry="24" fill="${TEAL}"/>
-      <ellipse class="ill-blob illustration-breathe" cx="40" cy="120" rx="36" ry="20" fill="${BLUE}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="40" cy="36" rx="26" ry="16" fill="${MINT}"/>
+      <ellipse class="ill-blob" cx="168" cy="128" rx="28" ry="12" fill="${CREAM}"/>
 
       <!-- calendar board -->
-      <rect x="70" y="36" width="100" height="88" rx="12" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
-      <path d="M70 56 H170" stroke="${OUTLINE}" stroke-width="2"/>
+      <rect x="78" y="36" width="96" height="88" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
+      <rect x="78" y="36" width="96" height="18" rx="10" fill="${CORAL}"/>
+      <path d="M98 32 V44 M134 32 V44 M154 32 V44" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
       <g class="illustration-float">
-        <rect x="82" y="66" width="28" height="16" rx="4" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.5"/>
-        <rect x="118" y="66" width="36" height="16" rx="4" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.5"/>
+        <rect x="90" y="66" width="20" height="16" rx="4" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.4"/>
+        <rect x="118" y="66" width="20" height="16" rx="4" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.4"/>
+        <rect x="146" y="66" width="16" height="16" rx="4" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="1.4"/>
       </g>
-      <g class="illustration-float" style="--ill-delay:0.45s">
-        <rect x="82" y="90" width="44" height="16" rx="4" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.5"/>
-        <rect x="134" y="90" width="22" height="16" rx="4" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.5"/>
-      </g>
-
-      <!-- clock -->
-      <g class="illustration-breathe">
-        <circle cx="44" cy="58" r="22" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
-        <circle cx="44" cy="58" r="2.5" fill="${OUTLINE}"/>
-        <path d="M44 58 L44 44 M44 58 L56 62" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      <g class="illustration-float" style="--ill-delay:0.4s">
+        <rect x="90" y="90" width="28" height="16" rx="4" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.4"/>
+        <rect x="128" y="90" width="20" height="16" rx="4" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="1.4"/>
       </g>
 
-      <!-- character -->
-      <g>
-        <circle cx="48" cy="118" r="14" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
-        <circle class="illustration-blink" cx="43" cy="116" r="1.8" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="53" cy="116" r="1.8" fill="${OUTLINE}"/>
-        <path d="M45 124 Q48 126 52 124" fill="none" stroke="${OUTLINE}" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M48 132 V148" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M48 138 L62 128" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- kitten -->
+      <g class="illustration-breathe illustration-sway">
+        <ellipse cx="48" cy="118" rx="26" ry="18" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        <!-- ears -->
+        <path d="M28 104 L34 86 L44 100Z" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M52 100 L62 84 L70 104Z" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M32 100 L36 90 L40 98" fill="${CORAL}" opacity="0.45"/>
+        <path d="M58 98 L62 88 L66 100" fill="${CORAL}" opacity="0.45"/>
+        <!-- face -->
+        <circle cx="48" cy="112" r="18" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        ${eyes(48, 110, 14, 2.6)}
+        <ellipse cx="48" cy="116" rx="3" ry="2" fill="${CORAL}"/>
+        <path d="M48 118 L48 122 M42 122 Q48 126 54 122" fill="none" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- whiskers -->
+        <path d="M28 114 H38 M28 120 H36 M58 114 H68 M62 120 H70" stroke="${OUTLINE}" stroke-width="1.3" stroke-linecap="round"/>
+        <path class="illustration-wave-arm" d="M70 118 Q86 108 96 114" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
       </g>
-
-      <path class="illustration-draw" d="M24 28 C34 18, 50 22, 58 14" fill="none" stroke="${CORAL}" stroke-width="2" stroke-linecap="round"/>
     `,
         'illustration-scene--planner'
       ),
 
+    /* —— SEO: curious snail with magnifier —— */
     seo: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="48" cy="36" rx="34" ry="22" fill="${LAVENDER}"/>
-      <ellipse class="ill-blob" cx="168" cy="128" rx="28" ry="18" fill="${YELLOW}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="160" cy="40" rx="28" ry="18" fill="${LAVENDER}"/>
+      <path class="ill-blob" d="M16 100 C30 78, 60 88, 52 112 C46 130, 8 122, 16 100Z" fill="${YELLOW}" opacity="0.75"/>
 
-      <!-- browser -->
+      <!-- browser window -->
       <g class="illustration-float">
-        <rect x="36" y="48" width="108" height="78" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
-        <rect x="36" y="48" width="108" height="16" rx="10" fill="${BLUE}"/>
-        <circle cx="48" cy="56" r="3" fill="${CORAL}"/>
-        <circle cx="58" cy="56" r="3" fill="${YELLOW}"/>
-        <circle cx="68" cy="56" r="3" fill="${CORAL}"/>
-        <rect x="80" y="52" width="52" height="8" rx="4" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.3"/>
-        <!-- chart bars -->
-        <rect x="52" y="96" width="12" height="20" rx="2" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.3"/>
-        <rect x="70" y="86" width="12" height="30" rx="2" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="1.3"/>
-        <rect x="88" y="78" width="12" height="38" rx="2" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.3"/>
-        <rect x="106" y="90" width="12" height="26" rx="2" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.3"/>
+        <rect x="88" y="36" width="92" height="70" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <rect x="88" y="36" width="92" height="14" rx="10" fill="${MINT}"/>
+        <circle cx="98" cy="43" r="2.5" fill="${CORAL}"/>
+        <circle cx="108" cy="43" r="2.5" fill="${YELLOW}"/>
+        <circle cx="118" cy="43" r="2.5" fill="${TEAL}"/>
+        <path d="M102 64 H160 M102 74 H148 M102 84 H154" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
+      </g>
+
+      <!-- snail -->
+      <g class="illustration-breathe illustration-sway">
+        <!-- shell -->
+        <circle cx="56" cy="108" r="24" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <path d="M56 108 Q44 100 48 88 Q64 84 68 98 Q70 110 56 108" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <!-- body -->
+        <ellipse cx="78" cy="128" rx="34" ry="14" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        <!-- face -->
+        <circle cx="104" cy="118" r="12" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2"/>
+        ${eyes(104, 116, 10, 2.2)}
+        <path d="M100 124 Q104 127 108 124" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- antennas -->
+        <path d="M98 108 L92 92" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <path d="M110 108 L116 90" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <circle class="illustration-bounce" cx="92" cy="90" r="3.5" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.4"/>
+        <circle class="illustration-bounce" style="--ill-delay:0.3s" cx="116" cy="88" r="3.5" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.4"/>
       </g>
 
       <!-- magnifier -->
-      <g class="illustration-breathe">
-        <circle cx="148" cy="78" r="22" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4" fill-opacity="0.85"/>
-        <circle cx="148" cy="78" r="12" fill="none" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M162 94 L176 112" stroke="${OUTLINE}" stroke-width="3.2" stroke-linecap="round"/>
-      </g>
-
-      <g class="illustration-sparkle">
-        <path d="M28 92 L30 98 L36 100 L30 102 L28 108 L26 102 L20 100 L26 98 Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1"/>
+      <g class="illustration-float" style="--ill-delay:0.35s">
+        <circle cx="150" cy="108" r="16" fill="${PAPER}" fill-opacity="0.7" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <path d="M162 120 L176 136" stroke="${OUTLINE}" stroke-width="3.2" stroke-linecap="round"/>
       </g>
     `,
         'illustration-scene--seo'
       ),
 
+    /* —— REVENUE: piggy bank —— */
     revenue: () =>
       wrap(
         `
-      <ellipse class="ill-blob" cx="40" cy="120" rx="32" ry="20" fill="${TEAL}"/>
-      <ellipse class="ill-blob illustration-breathe" cx="160" cy="40" rx="30" ry="22" fill="${YELLOW}"/>
+      <ellipse class="ill-blob" cx="36" cy="40" rx="24" ry="16" fill="${YELLOW}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="168" cy="120" rx="30" ry="14" fill="${MINT}"/>
 
-      <!-- pipeline cards -->
-      <g class="illustration-float">
-        <rect x="28" y="58" width="42" height="30" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle cx="40" cy="73" r="6" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.4"/>
-        <path d="M50 68 H62 M50 76 H58" stroke="${OUTLINE}" stroke-width="1.4" stroke-linecap="round"/>
+      <!-- coins -->
+      <g class="illustration-bounce">
+        <circle cx="44" cy="96" r="14" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        <text x="44" y="101" text-anchor="middle" font-size="12" font-weight="700" fill="${OUTLINE}">$</text>
       </g>
-      <g class="illustration-float" style="--ill-delay:0.35s">
-        <rect x="86" y="48" width="42" height="30" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M98 58 H116 M98 66 H110" stroke="${OUTLINE}" stroke-width="1.4" stroke-linecap="round"/>
-        <circle cx="116" cy="62" r="5" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.3"/>
-      </g>
-      <g class="illustration-float" style="--ill-delay:0.7s">
-        <rect x="140" y="68" width="42" height="30" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M152 80 Q160 72 170 82" fill="none" stroke="${CORAL}" stroke-width="2.2" stroke-linecap="round"/>
+      <g class="illustration-bounce" style="--ill-delay:0.35s">
+        <circle cx="58" cy="118" r="11" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="2"/>
+        <text x="58" y="122" text-anchor="middle" font-size="10" font-weight="700" fill="${OUTLINE}">$</text>
       </g>
 
-      <!-- connectors / arrow -->
-      <path class="illustration-draw" d="M70 72 H86" stroke="${CORAL}" stroke-width="2" stroke-linecap="round"/>
-      <path class="illustration-draw" d="M128 64 H140" stroke="${CORAL}" stroke-width="2" stroke-linecap="round" style="--ill-delay:0.2s"/>
-      <path class="illustration-float" d="M156 112 L168 96 L180 112 Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.8" stroke-linejoin="round"/>
+      <!-- piggy -->
+      <g class="illustration-breathe illustration-sway">
+        <ellipse cx="120" cy="100" rx="48" ry="36" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <!-- snout -->
+        <ellipse cx="156" cy="104" rx="14" ry="11" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle cx="151" cy="104" r="2.2" fill="${OUTLINE}"/>
+        <circle cx="161" cy="104" r="2.2" fill="${OUTLINE}"/>
+        <!-- ear -->
+        <path d="M90 78 L98 58 L112 74Z" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        ${eyes(118, 92, 18, 3)}
+        <path d="M110 108 Q118 114 126 108" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <!-- coin slot -->
+        <path d="M108 72 H132" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- legs -->
+        <path d="M96 130 V142 M112 132 V144 M128 132 V144 M144 130 V142" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- tail curl -->
+        <path class="illustration-wave-arm" d="M74 100 Q60 88 66 76" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
 
-      <!-- bubbles -->
       <g class="illustration-sparkle">
-        <ellipse cx="64" cy="112" rx="16" ry="12" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.8"/>
-        <ellipse cx="96" cy="128" rx="12" ry="9" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="1.6"/>
+        <path d="M168 56 L170 62 L176 64 L170 66 L168 72 L166 66 L160 64 L166 62 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1"/>
       </g>
     `,
         'illustration-scene--revenue'
       ),
 
+    /* —— EMPTY: sleepy cloud —— */
     empty: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="100" cy="128" rx="56" ry="16" fill="${WARM}" opacity="0.55"/>
-      <ellipse class="ill-blob" cx="160" cy="48" rx="24" ry="18" fill="${BLUE}"/>
+      <ellipse class="ill-blob" cx="40" cy="120" rx="28" ry="12" fill="${CREAM}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="170" cy="48" rx="22" ry="14" fill="${LAVENDER}"/>
 
-      <!-- empty page -->
       <g class="illustration-float">
-        <path d="M78 44 H122 L138 60 V124 H78 Z" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3" stroke-linejoin="round"/>
-        <path d="M122 44 V60 H138" fill="none" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M90 78 H118 M90 88 H112 M90 98 H120" stroke="${WARM}" stroke-width="2" stroke-linecap="round"/>
-      </g>
-
-      <!-- character -->
-      <g class="illustration-breathe">
-        <circle cx="52" cy="98" r="18" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle class="illustration-blink" cx="46" cy="96" r="2" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="58" cy="96" r="2" fill="${OUTLINE}"/>
-        <path d="M48 106 Q52 104 56 106" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M52 116 V140" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M52 124 L68 112" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M40 86 Q46 80 52 84" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
-      </g>
-
-      <g class="illustration-sparkle">
-        <circle cx="148" cy="88" r="3" fill="${LAVENDER}"/>
-        <circle cx="158" cy="100" r="2" fill="${YELLOW}"/>
+        <!-- cloud body -->
+        <path d="M54 96 C54 74, 74 62, 94 68 C100 52, 128 52, 136 70 C156 68, 168 88, 156 104 C168 118, 148 134, 124 128 C110 142, 78 138, 70 120 C52 124, 44 110, 54 96Z"
+          fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        ${eyes(100, 96, 22, 3)}
+        <!-- sleepy smile -->
+        <path d="M92 110 Q100 106 108 110" fill="none" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="84" cy="102" rx="5" ry="3" fill="${CORAL}" opacity="0.35"/>
+        <ellipse cx="116" cy="102" rx="5" ry="3" fill="${CORAL}" opacity="0.35"/>
+        <!-- zzz -->
+        <g class="illustration-bounce">
+          <text x="148" y="78" font-size="14" font-weight="700" fill="${OUTLINE}">z</text>
+          <text x="160" y="64" font-size="18" font-weight="700" fill="${OUTLINE}">z</text>
+          <text x="174" y="48" font-size="22" font-weight="700" fill="${CORAL}">z</text>
+        </g>
       </g>
     `,
         'illustration-scene--empty'
       ),
 
+    /* —— WAITING: tortoise with tea —— */
     waiting: () =>
       wrap(
         `
-      <ellipse class="ill-blob" cx="48" cy="40" rx="28" ry="20" fill="${YELLOW}"/>
-      <ellipse class="ill-blob illustration-breathe" cx="160" cy="120" rx="30" ry="18" fill="${CORAL_SOFT}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="168" cy="40" rx="24" ry="16" fill="${YELLOW}"/>
+      <ellipse class="ill-blob" cx="36" cy="128" rx="28" ry="12" fill="${MINT}"/>
 
-      <!-- blocked path -->
-      <path d="M36 118 H164" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="8 6"/>
-      <g>
-        <rect x="88" y="100" width="24" height="36" rx="4" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="2" transform="rotate(12 100 118)"/>
-        <path d="M94 112 H106 M100 106 V118" stroke="${PAPER}" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- hourglass -->
+      <g class="illustration-float">
+        <path d="M148 48 H180 L170 78 L180 108 H148 L158 78 Z" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M156 56 H172 L164 72 Z" fill="${CORAL}"/>
+        <path class="illustration-bounce" d="M160 96 H168" stroke="${CORAL}" stroke-width="3" stroke-linecap="round"/>
       </g>
 
-      <!-- clock -->
-      <g class="illustration-breathe">
-        <circle cx="140" cy="56" r="26" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
-        <circle cx="140" cy="56" r="3" fill="${OUTLINE}"/>
-        <path d="M140 56 L140 40" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
-        <path d="M140 56 L152 62" stroke="${YELLOW}" stroke-width="2.4" stroke-linecap="round"/>
-      </g>
-
-      <!-- paused character -->
-      <g>
-        <circle cx="56" cy="78" r="16" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <circle class="illustration-blink" cx="50" cy="76" r="2" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="62" cy="76" r="2" fill="${OUTLINE}"/>
-        <path d="M52 86 Q56 84 60 86" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M56 94 V118" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M56 102 L44 110 M56 102 L68 108" stroke="${OUTLINE}" stroke-width="2.1" stroke-linecap="round"/>
-        <!-- pause marks -->
-        <rect x="72" y="68" width="4" height="14" rx="1.5" fill="${CORAL}"/>
-        <rect x="80" y="68" width="4" height="14" rx="1.5" fill="${CORAL}"/>
+      <!-- tortoise -->
+      <g class="illustration-breathe illustration-sway">
+        <ellipse cx="78" cy="108" rx="42" ry="28" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2.4"/>
+        <!-- shell pattern -->
+        <path d="M56 100 H100 M78 88 V124 M62 92 L94 120 M94 92 L62 120" stroke="${OUTLINE}" stroke-width="1.6" opacity="0.5"/>
+        <!-- head -->
+        <circle cx="122" cy="100" r="16" fill="${MINT}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        ${eyes(124, 98, 12, 2.4)}
+        <path d="M118 108 Q124 112 130 108" fill="none" stroke="${OUTLINE}" stroke-width="1.7" stroke-linecap="round"/>
+        <!-- tiny legs -->
+        <ellipse cx="52" cy="128" rx="10" ry="6" fill="${MINT}" stroke="${OUTLINE}" stroke-width="1.8"/>
+        <ellipse cx="78" cy="132" rx="10" ry="6" fill="${MINT}" stroke="${OUTLINE}" stroke-width="1.8"/>
+        <ellipse cx="104" cy="128" rx="10" ry="6" fill="${MINT}" stroke="${OUTLINE}" stroke-width="1.8"/>
+        <!-- flower on shell -->
+        <g class="illustration-sparkle">
+          <circle cx="70" cy="96" r="5" fill="${CORAL}"/>
+          <circle cx="66" cy="92" r="3.5" fill="${YELLOW}"/>
+          <circle cx="74" cy="92" r="3.5" fill="${YELLOW}"/>
+          <circle cx="70" cy="96" r="2.2" fill="${PAPER}"/>
+        </g>
       </g>
     `,
         'illustration-scene--waiting'
       ),
 
+    /* —— SUCCESS: party star blob —— */
     success: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="100" cy="130" rx="50" ry="14" fill="${TEAL}" opacity="0.7"/>
-      <ellipse class="ill-blob" cx="40" cy="44" rx="22" ry="16" fill="${YELLOW}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="36" cy="120" rx="26" ry="12" fill="${TEAL}" opacity="0.7"/>
+      <ellipse class="ill-blob" cx="168" cy="44" rx="22" ry="14" fill="${LAVENDER}"/>
 
-      <!-- completed card -->
-      <g class="illustration-float">
-        <rect x="62" y="52" width="76" height="56" rx="12" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
-        <circle cx="100" cy="80" r="18" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2"/>
-        <path class="illustration-draw" d="M90 80 L98 88 L114 70" fill="none" stroke="${CORAL}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- confetti -->
+      <g class="illustration-bounce">
+        <rect x="28" y="48" width="8" height="8" rx="1" fill="${CORAL}" transform="rotate(18 32 52)"/>
+        <rect x="168" y="72" width="7" height="7" rx="1" fill="${TEAL}" transform="rotate(-20 171 75)"/>
+        <circle cx="48" cy="72" r="3" fill="${YELLOW}"/>
+        <circle cx="160" cy="100" r="3.5" fill="${BLUE}"/>
+      </g>
+
+      <!-- big star face -->
+      <g class="illustration-pop illustration-sway">
+        <path d="M100 28 L112 68 L154 68 L120 92 L132 132 L100 108 L68 132 L80 92 L46 68 L88 68 Z"
+          fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="2.4" stroke-linejoin="round"/>
+        ${eyes(100, 78, 20, 3.2)}
+        <path d="M90 92 Q100 102 110 92" fill="none" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="84" cy="84" rx="5" ry="3" fill="${CORAL}" opacity="0.4"/>
+        <ellipse cx="116" cy="84" rx="5" ry="3" fill="${CORAL}" opacity="0.4"/>
       </g>
 
       <g class="illustration-sparkle">
-        <path d="M42 72 L45 80 L53 83 L45 86 L42 94 L39 86 L31 83 L39 80 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.2"/>
-        <path d="M156 60 L158 66 L164 68 L158 70 L156 76 L154 70 L148 68 L154 66 Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.2"/>
-        <circle cx="148" cy="100" r="3.5" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="1.1"/>
-      </g>
-
-      <!-- happy face -->
-      <g class="illustration-breathe illustration-sway">
-        <circle cx="36" cy="112" r="15" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
-        <circle cx="28" cy="116" r="2.6" fill="${CORAL}" opacity="0.35"/>
-        <circle cx="44" cy="116" r="2.6" fill="${CORAL}" opacity="0.35"/>
-        <circle class="illustration-blink" cx="31" cy="110" r="1.9" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="41" cy="110" r="1.9" fill="${OUTLINE}"/>
-        <path d="M31 119 Q36 124 42 119" fill="none" stroke="${OUTLINE}" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M36 88 L38 94 L44 96 L38 98 L36 104 L34 98 L28 96 L34 94 Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1"/>
+        <path d="M164 48 L166 54 L172 56 L166 58 L164 64 L162 58 L156 56 L162 54 Z" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1"/>
       </g>
     `,
         'illustration-scene--success'
       ),
 
+    /* —— PERSONAL: sprout buddy —— */
     personal: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="44" cy="120" rx="36" ry="18" fill="${TEAL}"/>
-      <ellipse class="ill-blob illustration-float" cx="168" cy="40" rx="26" ry="18" fill="${YELLOW}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="168" cy="128" rx="26" ry="12" fill="${MINT}"/>
+      <path class="ill-blob" d="M16 48 C32 24, 58 36, 48 58 C40 74, 6 68, 16 48Z" fill="${CREAM}"/>
 
-      <!-- progress ring -->
-      <g class="illustration-pop">
-        <circle cx="132" cy="78" r="34" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.4"/>
-        <circle cx="132" cy="78" r="24" fill="none" stroke="${SOFT_LINE}" stroke-width="6"/>
-        <circle class="illustration-ring-draw" cx="132" cy="78" r="24" fill="none" stroke="${CORAL}" stroke-width="6" stroke-linecap="round"
-          stroke-dasharray="110 151" transform="rotate(-90 132 78)"/>
-        <text x="132" y="84" text-anchor="middle" font-size="16" font-family="IBM Plex Mono, monospace" font-weight="700" fill="${OUTLINE}">74%</text>
-      </g>
-
-      <!-- habit ticks -->
-      <g class="illustration-float" style="--ill-delay:0.2s">
-        <rect x="28" y="48" width="52" height="18" rx="5" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <path class="illustration-check-pop" d="M36 57 L42 62 L52 52" fill="none" stroke="${CORAL}" stroke-width="2.4" stroke-linecap="round"/>
-      </g>
-      <g class="illustration-float" style="--ill-delay:0.55s">
-        <rect x="34" y="74" width="48" height="18" rx="5" fill="${LAVENDER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <path class="illustration-check-pop" style="--ill-delay:0.4s" d="M42 83 L47 88 L58 78" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
-      </g>
-      <g class="illustration-float" style="--ill-delay:0.9s">
-        <rect x="40" y="100" width="44" height="18" rx="5" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2"/>
-        <circle cx="52" cy="109" r="4" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.6"/>
+      <!-- pot -->
+      <g class="illustration-float">
+        <path d="M78 104 H138 L130 140 H86 Z" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.3" stroke-linejoin="round"/>
+        <rect x="72" y="96" width="72" height="12" rx="4" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2"/>
+        <!-- pot face -->
+        ${eyes(108, 122, 16, 2.4)}
+        <path d="M102 130 Q108 134 114 130" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
       </g>
 
-      <!-- character waving -->
-      <g class="illustration-breathe illustration-sway">
-        <circle cx="70" cy="132" r="14" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
-        <circle class="illustration-blink" cx="65" cy="130" r="1.8" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="75" cy="130" r="1.8" fill="${OUTLINE}"/>
-        <path d="M66 138 Q70 142 75 138" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="illustration-wave-arm" d="M58 140 Q48 128 42 118" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- sprout -->
+      <g class="illustration-bounce">
+        <path d="M108 96 V62" stroke="${OUTLINE}" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M108 72 Q88 58 78 66 Q90 78 108 72" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M108 66 Q128 50 142 60 Q128 74 108 66" fill="${MINT}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <!-- leaf eyes -->
+        <circle class="illustration-blink" cx="92" cy="66" r="2" fill="${OUTLINE}"/>
+        <circle class="illustration-blink" cx="126" cy="60" r="2" fill="${OUTLINE}"/>
       </g>
 
-      <g class="illustration-sparkle illustration-bounce">
-        <path d="M168 88 L170 94 L176 96 L170 98 L168 104 L166 98 L160 96 L166 94 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.1"/>
-        <circle cx="156" cy="70" r="2.4" fill="${CORAL}"/>
+      <!-- watering can -->
+      <g class="illustration-float" style="--ill-delay:0.4s">
+        <path d="M148 78 H176 L172 98 H152 Z" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M176 84 Q188 80 190 92" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="illustration-draw" d="M188 94 L176 110" stroke="${BLUE}" stroke-width="2" stroke-linecap="round"/>
+      </g>
+
+      <g class="illustration-sparkle">
+        <circle cx="56" cy="88" r="3" fill="${YELLOW}"/>
+        <circle cx="44" cy="100" r="2" fill="${CORAL}"/>
       </g>
     `,
         'illustration-scene--personal'
       ),
 
+    /* —— HABITS: fox with scarf streak —— */
     habits: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="160" cy="120" rx="34" ry="18" fill="${LAVENDER}"/>
-      <ellipse class="ill-blob" cx="36" cy="40" rx="26" ry="18" fill="${YELLOW}"/>
+      <ellipse class="ill-blob" cx="40" cy="36" rx="24" ry="16" fill="${LAVENDER}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="168" cy="120" rx="28" ry="12" fill="${CREAM}"/>
 
-      <!-- streak flame -->
-      <g class="illustration-bounce">
-        <path d="M48 108 C48 88, 68 84, 72 68 C86 88, 92 98, 92 112 C92 128, 78 136, 64 136 C52 136, 48 124, 48 108Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="2.2"/>
-        <path d="M64 118 C64 108, 74 106, 76 98 C82 108, 82 116, 76 122 C72 126, 66 124, 64 118Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1.5"/>
-      </g>
-
-      <!-- checklist -->
+      <!-- checklist card behind -->
       <g class="illustration-float">
-        <rect x="100" y="40" width="72" height="84" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
-        <g class="illustration-check-pop">
-          <rect x="112" y="54" width="12" height="12" rx="2" fill="${TEAL}" stroke="${OUTLINE}" stroke-width="1.5"/>
-          <path d="M114 60 L117 63 L122 57" fill="none" stroke="${PAPER}" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M132 60 H158" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
-        </g>
-        <g class="illustration-check-pop" style="--ill-delay:0.5s">
-          <rect x="112" y="78" width="12" height="12" rx="2" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="1.5"/>
-          <path d="M114 84 L117 87 L122 81" fill="none" stroke="${PAPER}" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M132 84 H152" stroke="${OUTLINE}" stroke-width="1.6" stroke-linecap="round"/>
-        </g>
-        <g>
-          <rect x="112" y="102" width="12" height="12" rx="2" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.5"/>
-          <path d="M132 108 H148" stroke="${WARM}" stroke-width="1.6" stroke-linecap="round"/>
-        </g>
+        <rect x="128" y="40" width="52" height="64" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.2"/>
+        <path class="illustration-check-pop" d="M138 58 L144 64 L156 50" fill="none" stroke="${TEAL}" stroke-width="2.4" stroke-linecap="round"/>
+        <path class="illustration-check-pop" style="--ill-delay:0.4s" d="M138 78 L144 84 L154 72" fill="none" stroke="${CORAL}" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M138 98 H162" stroke="${SOFT_LINE}" stroke-width="2" stroke-linecap="round"/>
       </g>
 
-      <g class="illustration-sparkle">
-        <circle cx="88" cy="52" r="3" fill="${CORAL}"/>
-        <circle cx="78" cy="66" r="2" fill="${TEAL}"/>
+      <!-- fox -->
+      <g class="illustration-breathe illustration-sway">
+        <!-- body -->
+        <ellipse cx="78" cy="118" rx="34" ry="24" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <!-- head -->
+        <path d="M48 88 L78 60 L108 88 Q108 112 78 118 Q48 112 48 88Z" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2.3" stroke-linejoin="round"/>
+        <!-- ears -->
+        <path d="M58 72 L64 44 L78 68Z" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M78 68 L92 42 L100 72Z" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M62 64 L66 50 L72 64" fill="${CORAL}" opacity="0.5"/>
+        <path d="M86 64 L92 48 L96 66" fill="${CORAL}" opacity="0.5"/>
+        <!-- face -->
+        ${eyes(78, 86, 18, 2.8)}
+        <ellipse cx="78" cy="96" rx="5" ry="3.5" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="1.5"/>
+        <circle cx="78" cy="96" r="1.6" fill="${OUTLINE}"/>
+        <path d="M70 104 Q78 110 86 104" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- blush -->
+        <ellipse cx="62" cy="96" rx="4" ry="2.5" fill="${CORAL}" opacity="0.35"/>
+        <ellipse cx="94" cy="96" rx="4" ry="2.5" fill="${CORAL}" opacity="0.35"/>
+        <!-- scarf -->
+        <path d="M58 108 Q78 118 98 108" fill="none" stroke="${CORAL}" stroke-width="5" stroke-linecap="round"/>
+        <path class="illustration-wave-arm" d="M98 110 Q118 118 122 132" fill="none" stroke="${CORAL}" stroke-width="5" stroke-linecap="round"/>
+        <!-- tail -->
+        <path class="illustration-bounce" d="M48 120 Q28 108 32 88 Q48 96 52 112" fill="${PEACH}" stroke="${OUTLINE}" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M36 96 Q42 100 40 108" fill="${PAPER}" opacity="0.7"/>
       </g>
     `,
         'illustration-scene--habits'
       ),
 
+    /* —— WEEKLY: chick hopping on days —— */
     weekly: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="40" cy="118" rx="32" ry="16" fill="${BLUE}"/>
-      <ellipse class="ill-blob" cx="168" cy="36" rx="24" ry="16" fill="${YELLOW}"/>
+      <ellipse class="ill-blob illustration-breathe" cx="36" cy="40" rx="24" ry="14" fill="${BLUE}"/>
+      <ellipse class="ill-blob" cx="168" cy="120" rx="26" ry="12" fill="${YELLOW}" opacity="0.7"/>
 
-      <!-- week grid -->
-      <g>
-        <rect x="48" y="44" width="120" height="84" rx="10" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2.3"/>
-        ${[0, 1, 2, 3, 4, 5, 6]
-          .map((i) => {
-            const x = 56 + i * 15;
-            const delay = (i * 0.12).toFixed(2);
-            const fill = i % 2 === 0 ? TEAL : CORAL;
-            const h = 18 + ((i * 7) % 28);
-            return `
-              <g class="illustration-bar-grow" style="--ill-delay:${delay}s">
-                <rect x="${x}" y="${108 - h}" width="10" height="${h}" rx="2" fill="${fill}" stroke="${OUTLINE}" stroke-width="1.3"/>
-              </g>
-            `;
-          })
-          .join('')}
+      <!-- day pads -->
+      ${[0, 1, 2, 3, 4, 5, 6]
+        .map((i) => {
+          const x = 28 + i * 22;
+          const delay = (i * 0.1).toFixed(2);
+          const fills = [TEAL, CORAL_SOFT, BLUE, YELLOW, LAVENDER, MINT, PEACH];
+          return `
+            <g class="illustration-float" style="--ill-delay:${delay}s">
+              <rect x="${x}" y="108" width="18" height="22" rx="5" fill="${fills[i]}" stroke="${OUTLINE}" stroke-width="1.7"/>
+            </g>
+          `;
+        })
+        .join('')}
+
+      <!-- chick -->
+      <g class="illustration-bounce illustration-sway">
+        <ellipse cx="100" cy="78" rx="28" ry="24" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <!-- wing -->
+        <path class="illustration-wave-arm" d="M78 78 Q64 70 62 84 Q72 90 80 84" fill="${CREAM}" stroke="${OUTLINE}" stroke-width="2" stroke-linejoin="round"/>
+        ${eyes(104, 74, 14, 2.8)}
+        <!-- beak -->
+        <path d="M112 82 L124 86 L112 90Z" fill="${CORAL}" stroke="${OUTLINE}" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- blush -->
+        <ellipse cx="92" cy="82" rx="4" ry="2.5" fill="${CORAL}" opacity="0.35"/>
+        <!-- crest -->
+        <path d="M92 58 Q96 48 100 56 Q104 46 108 56" fill="none" stroke="${CORAL}" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- feet -->
+        <path d="M90 100 L86 112 M90 100 L94 112 M110 100 L106 112 M110 100 L114 112" stroke="${OUTLINE}" stroke-width="2" stroke-linecap="round"/>
       </g>
 
-      <!-- day rings -->
-      <g class="illustration-float">
-        <circle cx="64" cy="36" r="10" fill="none" stroke="${CORAL}" stroke-width="3"/>
-        <circle cx="90" cy="32" r="8" fill="none" stroke="${TEAL}" stroke-width="2.5"/>
-        <circle cx="114" cy="34" r="9" fill="none" stroke="${BLUE}" stroke-width="2.5"/>
-      </g>
-
-      <g class="illustration-sparkle illustration-bounce">
-        <path d="M158 78 L160 84 L166 86 L160 88 L158 94 L156 88 L150 86 L156 84 Z" fill="${YELLOW}" stroke="${OUTLINE}" stroke-width="1"/>
+      <g class="illustration-sparkle">
+        <circle cx="148" cy="56" r="3" fill="${TEAL}"/>
+        <circle cx="56" cy="64" r="2.5" fill="${CORAL}"/>
       </g>
     `,
         'illustration-scene--weekly'
       ),
 
+    /* —— MINDSET: three mood blobs —— */
     mindset: () =>
       wrap(
         `
-      <ellipse class="ill-blob illustration-breathe" cx="160" cy="118" rx="30" ry="16" fill="${CORAL_SOFT}"/>
-      <ellipse class="ill-blob" cx="36" cy="44" rx="24" ry="16" fill="${LAVENDER}"/>
+      <ellipse class="ill-blob" cx="100" cy="136" rx="60" ry="12" fill="${CREAM}" opacity="0.8"/>
 
-      <!-- mood gauges -->
-      <g class="illustration-float">
-        <rect x="56" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <rect class="illustration-bar-grow" x="62" y="78" width="16" height="34" rx="3" fill="${CORAL}"/>
-        <text x="70" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">E</text>
+      <!-- energy (spicy) -->
+      <g class="illustration-bounce" style="--ill-delay:0s">
+        <circle cx="48" cy="78" r="28" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        ${eyes(48, 74, 14, 2.6)}
+        <path d="M40 88 Q48 96 56 88" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M28 58 L32 48 M48 52 L48 42 M68 58 L64 48" stroke="${CORAL}" stroke-width="2" stroke-linecap="round"/>
+        <text x="48" y="124" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="${OUTLINE}">energy</text>
       </g>
+
+      <!-- mood (calm) -->
       <g class="illustration-float" style="--ill-delay:0.25s">
-        <rect x="96" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <rect class="illustration-bar-grow" style="--ill-delay:0.2s" x="102" y="66" width="16" height="46" rx="3" fill="${BLUE}"/>
-        <text x="110" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">M</text>
-      </g>
-      <g class="illustration-float" style="--ill-delay:0.5s">
-        <rect x="136" y="48" width="28" height="72" rx="8" fill="${PAPER}" stroke="${OUTLINE}" stroke-width="2"/>
-        <rect class="illustration-bar-grow" style="--ill-delay:0.35s" x="142" y="88" width="16" height="24" rx="3" fill="${TEAL}"/>
-        <text x="150" y="44" text-anchor="middle" font-size="8" fill="${OUTLINE}">F</text>
-      </g>
-
-      <!-- heart / face -->
-      <g class="illustration-breathe illustration-sway">
-        <circle cx="46" cy="108" r="16" fill="${CORAL_SOFT}" stroke="${OUTLINE}" stroke-width="2"/>
-        <circle class="illustration-blink" cx="40" cy="106" r="2" fill="${OUTLINE}"/>
-        <circle class="illustration-blink" cx="52" cy="106" r="2" fill="${OUTLINE}"/>
-        <path d="M42 114 Q46 118 52 114" fill="none" stroke="${OUTLINE}" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="100" cy="70" r="30" fill="${BLUE}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <!-- happy closed eyes -->
+        <path class="illustration-blink" d="M88 68 Q94 62 100 68" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="illustration-blink" d="M100 68 Q106 62 112 68" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M90 80 Q100 90 110 80" fill="none" stroke="${OUTLINE}" stroke-width="2.2" stroke-linecap="round"/>
+        <ellipse cx="86" cy="76" rx="4" ry="2.5" fill="${CORAL}" opacity="0.35"/>
+        <ellipse cx="114" cy="76" rx="4" ry="2.5" fill="${CORAL}" opacity="0.35"/>
+        <text x="100" y="124" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="${OUTLINE}">mood</text>
       </g>
 
-      <g class="illustration-sparkle">
-        <circle cx="172" cy="56" r="3" fill="${YELLOW}"/>
-        <circle cx="178" cy="70" r="2" fill="${CORAL}"/>
+      <!-- focus (tiny glasses) -->
+      <g class="illustration-pop" style="--ill-delay:0.15s">
+        <circle cx="152" cy="78" r="28" fill="${MINT}" stroke="${OUTLINE}" stroke-width="2.3"/>
+        <!-- glasses -->
+        <circle cx="142" cy="74" r="8" fill="none" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle cx="162" cy="74" r="8" fill="none" stroke="${OUTLINE}" stroke-width="2"/>
+        <path d="M150 74 H154" stroke="${OUTLINE}" stroke-width="2"/>
+        <circle cx="142" cy="74" r="2.2" fill="${OUTLINE}"/>
+        <circle cx="162" cy="74" r="2.2" fill="${OUTLINE}"/>
+        <path d="M146 88 Q152 92 158 88" fill="none" stroke="${OUTLINE}" stroke-width="1.8" stroke-linecap="round"/>
+        <text x="152" y="124" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="${OUTLINE}">focus</text>
       </g>
     `,
         'illustration-scene--mindset'
@@ -524,7 +573,6 @@
     revenue: 'revenue',
     'needs-ophelia': 'success',
     waiting: 'waiting',
-    // Personal workspace pages
     personal: 'personal',
     habits: 'habits',
     weekly: 'weekly',
@@ -638,7 +686,6 @@
     react
   };
 
-  // Gentle periodic wave so the UI keeps feeling alive (short attention span friendly)
   let idleWaveTimer = null;
   function startIdleWaves() {
     if (idleWaveTimer) return;

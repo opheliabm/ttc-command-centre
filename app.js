@@ -300,10 +300,12 @@ function triggerArt(mood, options) {
 function updatePageTitleArt() {
   const host = document.getElementById('page-title-art');
   if (!host || !window.TTC_ILLUSTRATIONS) return;
-  const pageKey = isPersonal()
-    ? `personal-${state.personal?.currentPage || 'today'}`
-    : state.currentPage;
-  const name = window.TTC_ILLUSTRATIONS.pageMap[pageKey] || (isPersonal() ? 'personal' : 'empty');
+  // Avoid stacking the same doodle next to a page intro that already shows it
+  if (isPersonal() || state.currentPage === 'today') {
+    host.innerHTML = '';
+    return;
+  }
+  const name = window.TTC_ILLUSTRATIONS.pageMap[state.currentPage] || 'empty';
   host.setAttribute('aria-hidden', 'true');
   host.className = 'illustration illustration--compact illustration--title';
   const markup = window.TTC_ILLUSTRATIONS.render(name, { size: 'compact' });
@@ -314,8 +316,11 @@ function updatePageTitleArt() {
 function renderSidebarCompanion() {
   const host = document.getElementById('sidebar-companion');
   if (!host || !window.TTC_ILLUSTRATIONS) return;
-  const scene = isPersonal() ? 'personal' : 'today';
-  host.innerHTML = window.TTC_ILLUSTRATIONS.render(scene, { size: 'section', className: 'sidebar-companion-art' });
+  // Dedicated mascot — different from every page scene
+  host.innerHTML = window.TTC_ILLUSTRATIONS.render('mascot', {
+    size: 'section',
+    className: 'sidebar-companion-art'
+  });
 }
 
 

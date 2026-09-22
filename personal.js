@@ -203,7 +203,7 @@
         </div>
       </section>
       <section class="page-section">
-        <div class="section-header"><h2>Today’s habits</h2>${art('habits', 'compact')}</div>
+        <div class="section-header"><h2>Today’s habits</h2></div>
         <div class="panel-card">
           <div class="habit-list">
             ${personal.habits.map((habit) => habitRow(personal, habit, today)).join('')}
